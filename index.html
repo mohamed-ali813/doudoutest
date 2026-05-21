@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>DOUDOU — Graphic Designer Portfolio | Admin Panel</title>
+<title>DOUDOU — Graphic Designer Portfolio | 响应式作品集</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+/* ---------- RESET & VARIABLES ---------- */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
   --yellow: #F8C200;
@@ -29,17 +30,12 @@ body {
   overflow-x: hidden;
   cursor: none;
 }
+/* 触摸屏隐藏光标 */
 @media (pointer: coarse), (max-width: 768px) {
   body { cursor: auto; }
   .cursor, .cursor-follower { display: none !important; }
 }
-/* عند فتح لوحة التحكم نلغي المؤشر المخصص */
-body.admin-open, body.admin-open .cursor, body.admin-open .cursor-follower {
-  cursor: auto !important;
-}
-body.admin-open .cursor, body.admin-open .cursor-follower {
-  display: none !important;
-}
+/* ---------- LOADING SCREEN ---------- */
 .loading-screen {
   position: fixed;
   inset: 0;
@@ -114,6 +110,7 @@ body.admin-open .cursor, body.admin-open .cursor-follower {
   0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
 }
+/* ---------- CUSTOM CURSOR HIGH Z ---------- */
 .cursor {
   width: 12px; height: 12px;
   background: var(--yellow);
@@ -136,6 +133,7 @@ body.admin-open .cursor, body.admin-open .cursor-follower {
   transition: all 0.15s ease;
   mix-blend-mode: difference;
 }
+/* GLITCH EFFECT */
 .glitch-text {
   position: relative;
   display: inline-block;
@@ -188,6 +186,7 @@ body.admin-open .cursor, body.admin-open .cursor-follower {
   30% { transform: skew(0deg); }
   100% { transform: skew(0deg); }
 }
+/* MARQUEE SEPARATOR */
 .marquee-section {
   width: 100%;
   background: linear-gradient(90deg, var(--dark2), rgba(123,47,190,0.2), var(--dark2));
@@ -223,6 +222,7 @@ body.admin-open .cursor, body.admin-open .cursor-follower {
   0% { transform: translateX(0%); }
   100% { transform: translateX(-50%); }
 }
+/* ---------- GENERAL & RESPONSIVE STYLES ---------- */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--dark); }
 ::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 3px; }
@@ -291,6 +291,7 @@ nav.scrolled { padding: 14px 60px; border-bottom-color: rgba(248,194,0,0.25); }
   color: var(--white) !important;
   transform: scale(1.05);
 }
+/* Hero */
 #home {
   min-height: 100vh;
   display: flex;
@@ -432,6 +433,7 @@ nav.scrolled { padding: 14px 60px; border-bottom-color: rgba(248,194,0,0.25); }
   display: block;
 }
 .stat-label { font-size: 11px; color: var(--gray); margin-top: 6px; }
+/* About Section Responsive */
 #about {
   min-height: 100vh;
   padding: 100px 24px;
@@ -543,6 +545,7 @@ nav.scrolled { padding: 14px 60px; border-bottom-color: rgba(248,194,0,0.25); }
   font-size: 12px;
   transition: all 0.3s;
 }
+/* Portfolio Grid */
 .portfolio-section {
   padding: 90px 24px;
   position: relative;
@@ -593,7 +596,6 @@ nav.scrolled { padding: 14px 60px; border-bottom-color: rgba(248,194,0,0.25); }
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  min-height: 200px;
 }
 .card-overlay {
   position: absolute;
@@ -629,10 +631,15 @@ nav.scrolled { padding: 14px 60px; border-bottom-color: rgba(248,194,0,0.25); }
   font-weight: 700;
   margin-bottom: 8px;
 }
-.card-desc {
-  font-size: 13px;
-  color: var(--gray);
-}
+.sm-mock { height: 280px; background: linear-gradient(135deg, #1a0a2e, #0d1a2e); display: flex; align-items: center; justify-content: center; }
+.print-mock { height: 320px; background: linear-gradient(135deg, #0f0f1a, #1a0f0f); display: flex; align-items: center; justify-content: center; }
+.logo-mock { height: 260px; background: linear-gradient(135deg, #0a0a14, #140a14); display: flex; align-items: center; justify-content: center; }
+.ui-mock { height: 280px; background: #1a1a2e; display: flex; align-items: center; justify-content: center; }
+.post-preview { width: 160px; height: 160px; border-radius: 16px; background: linear-gradient(135deg, var(--yellow), var(--purple)); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; }
+.brochure { width: 120px; height: 180px; background: white; border-radius: 6px; overflow: hidden; }
+.logo-display { font-family: 'Syne'; font-size: 42px; background: linear-gradient(135deg, var(--yellow), var(--purple-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.app-frame { width: 160px; height: 220px; background: #0f0f23; border-radius: 24px; overflow: hidden; }
+/* Contact */
 #contact { padding: 90px 24px; text-align: center; position: relative; }
 .contact-heading {
   font-family: 'Syne', sans-serif;
@@ -677,6 +684,8 @@ footer {
 footer strong { color: var(--yellow); }
 .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
 .reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* SHOWCASE MODAL (VERTICAL) */
 .showcase-overlay {
   position: fixed; inset: 0; z-index: 20000;
   background: #0a0a0a; opacity: 0; visibility: hidden;
@@ -731,6 +740,7 @@ footer strong { color: var(--yellow); }
 @keyframes floatShape { 0% { transform: translateY(0); } 100% { transform: translateY(-20px); } }
 @keyframes characterFloat { 0% { transform: translateY(0); } 100% { transform: translateY(-15px); } }
 @keyframes badgeFloat { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
+/* Responsive Media Queries */
 @media (max-width: 1024px) {
   .behance-grid { columns: 2; }
   .about-inner { gap: 48px; }
@@ -746,7 +756,7 @@ footer strong { color: var(--yellow); }
   .section-tag { justify-content: center; }
   .skills-row { justify-content: center; }
   .floating-badge { transform: scale(0.8); }
-  .fb1, .fb2, .fb3 { display: none; }
+  .fb1, .fb2, .fb3 { display: none; } /* avoid overlap on small screens */
   .avatar-container { max-width: 280px; }
   .showcase-header { padding: 16px 20px; }
   .showcase-project-title { font-size: 16px; }
@@ -765,151 +775,6 @@ footer strong { color: var(--yellow); }
   .hero-title { font-size: 42px; }
   .hero-badge { font-size: 9px; margin-bottom: 20px; }
   .nav-links { gap: 12px; }
-}
-/* Admin Panel Styles */
-.admin-trigger-hint {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 9999;
-  background: rgba(0,0,0,0.4);
-  backdrop-filter: blur(10px);
-  padding: 6px 12px;
-  border-radius: 30px;
-  font-size: 10px;
-  font-family: monospace;
-  color: rgba(255,255,255,0.3);
-  pointer-events: none;
-}
-.admin-panel {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 30000;
-  background: rgba(0,0,0,0.95);
-  backdrop-filter: blur(20px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 40px 20px;
-  overflow-y: auto;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-  cursor: auto !important;
-}
-.admin-panel.open {
-  opacity: 1;
-  visibility: visible;
-}
-.admin-container {
-  max-width: 900px;
-  width: 100%;
-  background: var(--dark2);
-  border-radius: 32px;
-  border: 1px solid rgba(248,194,0,0.2);
-  padding: 24px;
-}
-.admin-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-.admin-header h2 {
-  font-family: 'Syne', sans-serif;
-  color: var(--yellow);
-}
-.admin-close {
-  background: rgba(255,255,255,0.1);
-  border: none;
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-}
-.projects-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin: 24px 0;
-  max-height: 400px;
-  overflow-y: auto;
-}
-.project-admin-item {
-  background: var(--dark3);
-  border-radius: 16px;
-  padding: 12px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.project-admin-title {
-  font-weight: bold;
-}
-.project-admin-actions {
-  display: flex;
-  gap: 8px;
-}
-.admin-btn {
-  background: rgba(123,47,190,0.3);
-  border: none;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 30px;
-  cursor: pointer;
-  font-size: 12px;
-}
-.admin-btn-primary {
-  background: var(--yellow);
-  color: var(--dark);
-}
-.admin-btn-danger {
-  background: rgba(220,20,60,0.6);
-}
-.admin-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: 24px;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  padding-top: 24px;
-}
-.admin-form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.admin-form-group label {
-  font-size: 12px;
-  color: var(--gray);
-  text-transform: uppercase;
-}
-.admin-form-group input, .admin-form-group select, .admin-form-group textarea {
-  background: var(--dark);
-  border: 1px solid rgba(255,255,255,0.1);
-  padding: 10px 14px;
-  border-radius: 12px;
-  color: white;
-  font-family: inherit;
-}
-.gallery-items-editor {
-  background: var(--dark3);
-  padding: 12px;
-  border-radius: 16px;
-}
-.gallery-item-row {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
-  align-items: center;
-  flex-wrap: wrap;
 }
 </style>
 </head>
@@ -953,11 +818,13 @@ footer strong { color: var(--yellow); }
 
 <div class="marquee-section"><div class="marquee-content">✦ GRAPHIC DESIGN ✦ MOTION ✦ BRANDING ✦ UI/UX ✦ PRINT ✦ CREATIVE SOLUTIONS <span>⚡</span> <i>DOUDOU PORTFOLIO</i> <span>⚡</span> ✦ GRAPHIC DESIGN ✦ MOTION ✦ BRANDING ✦ UI/UX ✦ PRINT ✦ CREATIVE SOLUTIONS <span>⚡</span> <i>DOUDOU PORTFOLIO</i> <span>⚡</span></div></div>
 
-<!-- Dynamic sections -->
-<section id="social-media" class="portfolio-section"><div class="section-header reveal"><span class="section-number">01 — Portfolio</span><h2 class="section-title">Social <span class="accent">Media</span><br><span class="outline">Designs</span></h2></div><div id="social-media-grid" class="behance-grid"></div></section>
-<section id="print" class="portfolio-section"><div class="section-header reveal"><span class="section-number">02 — Portfolio</span><h2 class="section-title">Print <span class="accent">Materials</span><br><span class="outline">Portfolio</span></h2></div><div id="print-grid" class="behance-grid"></div></section>
-<section id="logos" class="portfolio-section"><div class="section-header reveal"><span class="section-number">03 — Portfolio</span><h2 class="section-title">Logo <span class="accent">&</span><br><span class="outline">Brand Identity</span></h2></div><div id="logos-grid" class="behance-grid"></div></section>
-<section id="uiux" class="portfolio-section"><div class="section-header reveal"><span class="section-number">04 — Portfolio</span><h2 class="section-title">UI<span class="accent">/</span>UX<br><span class="outline">Interfaces</span></h2></div><div id="uiux-grid" class="behance-grid"></div></section>
+<section id="social-media" class="portfolio-section"><div class="section-header reveal"><span class="section-number">01 — Portfolio</span><h2 class="section-title">Social <span class="accent">Media</span><br><span class="outline">Designs</span></h2></div><div class="behance-grid"><div class="project-card reveal" data-project="sm1"><div class="card-visual sm-mock"><div class="mock-design"><div class="post-preview">NEW</div></div><div class="card-overlay"><button class="overlay-btn">View</button></div></div><div class="card-info"><div class="card-cat">Instagram Post</div><div class="card-title">Product Launch Campaign</div><div class="card-desc">Bold typography meets gradient gradients for maximum engagement.</div></div></div><div class="project-card reveal reveal-delay-1" data-project="sm2"><div class="card-visual sm-mock" style="background:linear-gradient(135deg,#0a1a0d,#0d0a1a)"><div class="mock-design"><div class="post-preview" style="width:120px;height:120px;background:linear-gradient(135deg,#00f5a0,#7B2FBE);border-radius:12px;"></div></div><div class="card-overlay"><button class="overlay-btn">View</button></div></div><div class="card-info"><div class="card-cat">Story Design</div><div class="card-title">Brand Awareness Series</div><div class="card-desc">Minimal yet powerful story templates for consistent branding.</div></div></div><div class="project-card reveal reveal-delay-2" data-project="sm3"><div class="card-visual sm-mock" style="background:linear-gradient(135deg,#1a0d0a,#0a0d1a)"><div class="mock-design"><div class="post-preview" style="background:linear-gradient(135deg,var(--yellow),#ff6b35);font-size:22px;">50%<br>OFF</div></div><div class="card-overlay"><button class="overlay-btn">View</button></div></div><div class="card-info"><div class="card-cat">Promotional Post</div><div class="card-title">Sale Event Visual</div><div class="card-desc">Eye-catching promotional graphics that drive action.</div></div></div></div></section>
+
+<section id="print" class="portfolio-section"><div class="section-header reveal"><span class="section-number">02 — Portfolio</span><h2 class="section-title">Print <span class="accent">Materials</span><br><span class="outline">Portfolio</span></h2></div><div class="behance-grid"><div class="project-card reveal" data-project="p1"><div class="card-visual print-mock"><div class="brochure"><div style="height:60px;background:linear-gradient(135deg,var(--yellow),var(--purple));"></div><div style="padding:12px;"><div style="height:6px;background:#e0e0e0;margin-bottom:6px;"></div><div style="height:6px;background:var(--yellow);width:40%;"></div></div></div><div class="card-overlay"><button class="overlay-btn">View</button></div></div><div class="card-info"><div class="card-cat">Brochure</div><div class="card-title">Corporate Tri-Fold</div><div class="card-desc">Professional brochure design for business presentations.</div></div></div></div></section>
+
+<section id="logos" class="portfolio-section"><div class="section-header reveal"><span class="section-number">03 — Portfolio</span><h2 class="section-title">Logo <span class="accent">&</span><br><span class="outline">Brand Identity</span></h2></div><div class="behance-grid"><div class="project-card reveal" data-project="l1"><div class="card-visual logo-mock"><div class="logo-display">NOVA</div><div class="card-overlay"><button class="overlay-btn">View</button></div></div><div class="card-info"><div class="card-cat">Wordmark</div><div class="card-title">Nova Tech Brand</div><div class="card-desc">Clean wordmark with gradient treatment for a tech startup.</div></div></div></div></section>
+
+<section id="uiux" class="portfolio-section"><div class="section-header reveal"><span class="section-number">04 — Portfolio</span><h2 class="section-title">UI<span class="accent">/</span>UX<br><span class="outline">Interfaces</span></h2></div><div class="behance-grid"><div class="project-card reveal" data-project="u1"><div class="card-visual ui-mock"><div class="app-frame"><div style="height:40px;background:rgba(248,194,0,0.1);display:flex;align-items:center;padding:0 14px;gap:6px;"><div style="width:6px;height:6px;background:var(--yellow);border-radius:50%;"></div><div style="width:6px;height:6px;background:var(--purple-light);"></div></div><div style="padding:14px;"><div style="height:8px;background:rgba(248,194,0,0.3);width:70%;border-radius:4px;margin-bottom:8px;"></div><div style="height:50px;background:rgba(123,47,190,0.2);border-radius:12px;margin-top:12px;"></div></div></div><div class="card-overlay"><button class="overlay-btn">View</button></div></div><div class="card-info"><div class="card-cat">Mobile App</div><div class="card-title">Finance Tracker App</div><div class="card-desc">Clean dashboard UI with dark theme and card-based layout.</div></div></div></div></section>
 
 <section id="contact"><div class="contact-inner"><div class="section-tag" style="justify-content:center;margin-bottom:24px;"><span style="width:40px;height:2px;background:var(--yellow);border-radius:2px;"></span> Let's Work Together</div><h2 class="contact-heading reveal"><span class="big">Got a</span><span class="big">Project?</span><span class="small" style="font-size:clamp(30px,4vw,60px);display:block;">Let's make it happen</span></h2><p class="contact-sub reveal reveal-delay-1">I'm always open to discussing new creative projects, brand identities, and design challenges. Let's build something great together.</p><div class="contact-links reveal reveal-delay-2"><a href="mailto:doudou@design.com" class="contact-link"><div class="icon">✉</div> doudou@design.com</a><a href="#" class="contact-link"><div class="icon">in</div> LinkedIn</a><a href="#" class="contact-link"><div class="icon">Be</div> Behance</a><a href="#" class="contact-link"><div class="icon">▷</div> Instagram</a></div><a href="mailto:doudou@design.com" class="btn-primary reveal reveal-delay-3" style="display:inline-flex;"><span>Start a Project ✦</span></a></div></section>
 
@@ -965,436 +832,101 @@ footer strong { color: var(--yellow); }
 
 <footer><span>© 2026 <strong>DOUDOU</strong> — Graphic Designer</span><span>Designed with <strong>✦</strong> and creativity</span><span>All rights reserved</span></footer>
 
-<div class="admin-trigger-hint">🔧 Admin (Ctrl+Shift+A)</div>
-<div class="admin-panel" id="adminPanel">
-  <div class="admin-container">
-    <div class="admin-header">
-      <h2>📁 Project Manager</h2>
-      <button class="admin-close" id="adminCloseBtn">✕</button>
-    </div>
-    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;">
-      <button id="exportDataBtn" class="admin-btn admin-btn-primary">📤 Export & Publish</button>
-      <label class="admin-btn admin-btn-primary" style="cursor: pointer;">📥 Load from File<input type="file" id="importFileInput" accept=".json" style="display: none;"></label>
-      <button id="addNewProjectBtn" class="admin-btn admin-btn-primary">➕ Add New Project</button>
-      <button id="loadRemoteDataBtn" class="admin-btn">🌐 Load from server (portfolio_data.json)</button>
-    </div>
-    <p style="font-size: 12px; color: var(--gray); margin-bottom: 16px;">📌 لجعل التعديلات مرئية للجميع: اضغط "Export & Publish" ثم ارفع الملف الذي تم تحميله إلى الاستضافة بنفس اسم <code>portfolio_data.json</code> في مجلد الموقع.</p>
-    <div id="projectsListAdmin" class="projects-list"></div>
-    <div id="projectFormContainer" style="display: none;">
-      <h3 id="formTitle">Add/Edit Project</h3>
-      <div class="admin-form" id="projectForm">
-        <div class="admin-form-group"><label>ID (unique)</label><input type="text" id="projectId" placeholder="e.g., sm_new1" required></div>
-        <div class="admin-form-group"><label>Category</label><select id="projectCategory"><option value="Social Media">Social Media</option><option value="Print">Print</option><option value="Logos">Logos</option><option value="UI/UX">UI/UX</option></select></div>
-        <div class="admin-form-group"><label>Year</label><input type="text" id="projectYear" placeholder="2025"></div>
-        <div class="admin-form-group"><label>Client</label><input type="text" id="projectClient" placeholder="Client name"></div>
-        <div class="admin-form-group"><label>Title</label><input type="text" id="projectTitle" placeholder="Project title"></div>
-        <div class="admin-form-group"><label>Description</label><textarea id="projectDesc" rows="3" placeholder="Short description"></textarea></div>
-        <div class="admin-form-group"><label>Tools (comma separated)</label><input type="text" id="projectTools" placeholder="Photoshop, Illustrator, Figma"></div>
-        <div class="admin-form-group"><label>Hero Visual Type</label><select id="heroType"><option value="gradient">Gradient Background</option><option value="solid">Solid Color</option><option value="text">Simple Text</option><option value="image">Image URL</option></select></div>
-        <div class="admin-form-group"><label>Hero Value (gradient: linear-gradient(135deg,#F8C200,#7B2FBE) / solid: #F8C200 / text: 'NEW' / image: https://...)</label><input type="text" id="heroValue" placeholder="e.g., linear-gradient(135deg,#F8C200,#7B2FBE)"></div>
-        <div class="admin-form-group"><label>Hero Text (optional, shown inside)</label><input type="text" id="heroText" placeholder="LAUNCH"></div>
-        <div class="admin-form-group"><label>Details (JSON array of {label, value, accent})</label><textarea id="projectDetails" rows="4" placeholder='[{"label":"Platform","value":"Instagram","accent":false}]'></textarea></div>
-        <div class="admin-form-group"><label>Gallery Items (JSON array of {bg, content})</label><textarea id="projectGallery" rows="6" placeholder='[{"bg":"linear-gradient(...)","content":"<div>My design</div>"}]'></textarea></div>
-        <div style="display: flex; gap: 12px; justify-content: flex-end;">
-          <button type="button" id="cancelFormBtn" class="admin-btn">Cancel</button>
-          <button type="button" id="saveProjectBtn" class="admin-btn admin-btn-primary">Save Project</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>
-// ==================== PASSWORD PROTECTION ====================
-const ADMIN_PASSWORD = "admin123"; // يمكنك تغييرها هنا
-
-// ==================== DEFAULT PROJECTS ====================
-const DEFAULT_PROJECTS = [
-  { id: "sm1", cat: "Social Media", year: "2024", client: "NovaBrand Co.", title: "Product Launch Campaign", desc: "A high-impact Instagram campaign designed for a product launch.", toolsArr: ["Photoshop","Illustrator"], heroType: "text", heroValue: "NEW", heroText: "NEW", detailsArr: [{label:"Platform",value:"Instagram",accent:false},{label:"Posts",value:"12 Assets",accent:true}], galleryArr: [{bg:"linear-gradient(135deg,#1a0a2e,#2a0a4e)",content:"<div style='text-align:center;padding:40px;font-size:32px;color:white;'>NEW ARRIVAL</div>"}] },
-  { id: "sm2", cat: "Social Media", year: "2024", client: "Horizon Agency", title: "Brand Awareness Series", desc: "Story templates for consistent brand presence.", toolsArr: ["Figma"], heroType: "text", heroValue: "STORY", heroText: "STORY", detailsArr: [{label:"Templates",value:"8 Designs",accent:true}], galleryArr: [] },
-  { id: "sm3", cat: "Social Media", year: "2024", client: "Flash Sale Store", title: "Sale Event Visual", desc: "Promotional graphics for flash sale.", toolsArr: ["Photoshop"], heroType: "text", heroValue: "50% OFF", heroText: "50% OFF", detailsArr: [{label:"CTR Lift",value:"+34%",accent:true}], galleryArr: [] },
-  { id: "p1", cat: "Print", year: "2023", client: "Prime Solutions Ltd.", title: "Corporate Tri-Fold", desc: "Professional tri-fold brochure.", toolsArr: ["InDesign"], heroType: "text", heroValue: "BROCHURE", heroText: "BROCHURE", detailsArr: [{label:"Size",value:"A4 Tri-Fold",accent:false}], galleryArr: [] },
-  { id: "l1", cat: "Logos", year: "2024", client: "Nova Tech Inc.", title: "Nova Tech Brand", desc: "Complete brand identity for tech startup.", toolsArr: ["Illustrator"], heroType: "text", heroValue: "NOVA", heroText: "NOVA", detailsArr: [{label:"Variants",value:"6 Versions",accent:true}], galleryArr: [] },
-  { id: "u1", cat: "UI/UX", year: "2024", client: "FinFlow App", title: "Finance Tracker App", desc: "Dark dashboard UI/UX for finance app.", toolsArr: ["Figma"], heroType: "text", heroValue: "UI/UX", heroText: "UI/UX", detailsArr: [{label:"Screens",value:"24 Screens",accent:true}], galleryArr: [] }
-];
-
-let projectsData = [];
-
-// ==================== DATA STORAGE (Local + Remote) ====================
-function saveProjectsToStorage() {
-  localStorage.setItem('doudou_portfolio_projects', JSON.stringify(projectsData));
-}
-function loadProjectsFromStorage() {
-  const stored = localStorage.getItem('doudou_portfolio_projects');
-  if (stored) {
-    projectsData = JSON.parse(stored);
-  } else {
-    projectsData = JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
-    saveProjectsToStorage();
-  }
-}
-// تحميل البيانات من ملف خارجي (لجميع الزوار)
-async function loadRemoteData() {
-  try {
-    const res = await fetch('portfolio_data.json?' + Date.now());
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        projectsData = data;
-        saveProjectsToStorage();
-        renderAllProjects();
-        if (typeof renderAdminList === 'function') renderAdminList();
-        console.log('✅ تم تحميل البيانات من الخادم');
-        return true;
-      }
-    }
-  } catch(e) { console.log('لا يوجد ملف remote'); }
-  return false;
-}
-
-// ==================== RENDER PROJECTS ====================
-function getCategoryGridId(cat) {
-  if (cat === "Social Media") return "social-media-grid";
-  if (cat === "Print") return "print-grid";
-  if (cat === "Logos") return "logos-grid";
-  if (cat === "UI/UX") return "uiux-grid";
-  return "";
-}
-function renderProjectCard(p) {
-  let heroHtml = '';
-  if (p.heroType === 'gradient') {
-    heroHtml = `<div style="background:${p.heroValue};width:100%;height:100%;display:flex;align-items:center;justify-content:center;min-height:180px;">${p.heroText ? `<div style="font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:white;">${p.heroText}</div>` : ''}</div>`;
-  } else if (p.heroType === 'solid') {
-    heroHtml = `<div style="background:${p.heroValue};width:100%;height:100%;display:flex;align-items:center;justify-content:center;min-height:180px;">${p.heroText ? `<div style="font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:${p.heroValue === '#0D0D0D' ? 'white' : 'black'};">${p.heroText}</div>` : ''}</div>`;
-  } else if (p.heroType === 'text') {
-    heroHtml = `<div style="background:linear-gradient(135deg,var(--yellow),var(--purple-light));width:100%;height:100%;display:flex;align-items:center;justify-content:center;min-height:180px;"><div style="font-family:'Syne',sans-serif;font-size:42px;font-weight:800;color:var(--dark);">${p.heroValue}</div></div>`;
-  } else if (p.heroType === 'image') {
-    heroHtml = `<div style="background:url('${p.heroValue}') center/cover;width:100%;height:100%;min-height:180px;"></div>`;
-  }
-  return `<div class="project-card" data-project-id="${p.id}">
-    <div class="card-visual">
-      ${heroHtml}
-      <div class="card-overlay"><button class="overlay-btn">View</button></div>
-    </div>
-    <div class="card-info">
-      <div class="card-cat">${p.cat}</div>
-      <div class="card-title">${p.title}</div>
-      <div class="card-desc">${p.desc.substring(0,80)}${p.desc.length>80?'...':''}</div>
-    </div>
-  </div>`;
-}
-function renderAllProjects() {
-  const grids = { "Social Media": document.getElementById("social-media-grid"), "Print": document.getElementById("print-grid"), "Logos": document.getElementById("logos-grid"), "UI/UX": document.getElementById("uiux-grid") };
-  for (let g in grids) if(grids[g]) grids[g].innerHTML = '';
-  projectsData.forEach(p => {
-    const gridId = getCategoryGridId(p.cat);
-    if (gridId && document.getElementById(gridId)) {
-      document.getElementById(gridId).innerHTML += renderProjectCard(p);
-    }
-  });
-  attachProjectCardEvents();
-}
-function attachProjectCardEvents() {
-  document.querySelectorAll('.project-card').forEach(card => {
-    const pid = card.getAttribute('data-project-id');
-    card.addEventListener('click', (e) => {
-      if (!e.target.closest('.overlay-btn')) openShowcase(pid);
-    });
-    const btn = card.querySelector('.overlay-btn');
-    if (btn) btn.addEventListener('click', (e) => { e.stopPropagation(); openShowcase(pid); });
-  });
-}
-function getProjectById(id) { return projectsData.find(p => p.id === id); }
-
-// Showcase
-function openShowcase(projectId) {
-  const proj = getProjectById(projectId);
-  if (!proj) return;
-  const sectionsDiv = document.getElementById('showcaseSections');
-  const projTitle = document.getElementById('showcaseProjectTitle');
-  const projCat = document.getElementById('showcaseProjectCat');
-  projTitle.innerText = proj.title;
-  projCat.innerText = proj.cat;
-  sectionsDiv.innerHTML = '';
-  (proj.galleryArr || []).forEach((item, idx) => {
-    const section = document.createElement('div');
-    section.className = 'showcase-section';
-    section.setAttribute('data-index', idx);
-    section.style.background = item.bg || '#0a0a0a';
-    const contentDiv = document.createElement('div');
-    contentDiv.className = 'showcase-content';
-    contentDiv.innerHTML = item.content || `<h3>${proj.title}</h3><p>${proj.desc}</p>`;
-    section.appendChild(contentDiv);
-    sectionsDiv.appendChild(section);
-  });
-  if ((proj.galleryArr || []).length === 0) {
-    const fallback = document.createElement('div');
-    fallback.className = 'showcase-section';
-    fallback.style.background = '#0a0a0a';
-    fallback.innerHTML = `<div class="showcase-content"><h3>${proj.title}</h3><p>${proj.desc}</p><div>✨ More visuals coming soon</div></div>`;
-    sectionsDiv.appendChild(fallback);
-  }
-  document.getElementById('totalIdx').innerText = (proj.galleryArr || []).length || 1;
-  document.getElementById('currentIdx').innerText = 1;
-  document.getElementById('showcaseOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-  document.getElementById('showcaseContainer').scrollTop = 0;
-  window.currentShowcaseProject = proj;
-  window.currentShowcaseIndex = 0;
-}
-function closeShowcase() {
-  document.getElementById('showcaseOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-function navigateShowcase(delta) {
-  const proj = window.currentShowcaseProject;
-  if (!proj) return;
-  const sections = document.querySelectorAll('.showcase-section');
-  let newIdx = window.currentShowcaseIndex + delta;
-  if (newIdx < 0) newIdx = 0;
-  if (newIdx >= sections.length) newIdx = sections.length - 1;
-  if (newIdx !== window.currentShowcaseIndex) {
-    sections[newIdx].scrollIntoView({ behavior: 'smooth', block: 'start' });
-    window.currentShowcaseIndex = newIdx;
-    document.getElementById('currentIdx').innerText = newIdx + 1;
-    document.getElementById('totalIdx').innerText = sections.length;
-  }
-}
-
-// ==================== ADMIN PANEL ====================
-let adminOpen = false;
-let editingProjectId = null;
-
-function renderAdminList() {
-  const container = document.getElementById('projectsListAdmin');
-  if (!container) return;
-  container.innerHTML = '';
-  projectsData.forEach(p => {
-    const div = document.createElement('div');
-    div.className = 'project-admin-item';
-    div.innerHTML = `<span class="project-admin-title"><strong>${p.title}</strong> (${p.cat})</span>
-      <div class="project-admin-actions">
-        <button class="admin-btn" data-action="edit" data-id="${p.id}">✏️ Edit</button>
-        <button class="admin-btn admin-btn-danger" data-action="delete" data-id="${p.id}">🗑️ Delete</button>
-      </div>`;
-    container.appendChild(div);
-  });
-  document.querySelectorAll('[data-action="edit"]').forEach(btn => btn.addEventListener('click', (e) => { editProject(btn.getAttribute('data-id')); }));
-  document.querySelectorAll('[data-action="delete"]').forEach(btn => btn.addEventListener('click', (e) => { if(confirm('Delete project?')) deleteProject(btn.getAttribute('data-id')); }));
-}
-function editProject(id) {
-  const p = getProjectById(id);
-  if (!p) return;
-  editingProjectId = id;
-  document.getElementById('projectId').value = p.id;
-  document.getElementById('projectCategory').value = p.cat;
-  document.getElementById('projectYear').value = p.year || '';
-  document.getElementById('projectClient').value = p.client || '';
-  document.getElementById('projectTitle').value = p.title;
-  document.getElementById('projectDesc').value = p.desc;
-  document.getElementById('projectTools').value = (p.toolsArr || []).join(', ');
-  document.getElementById('heroType').value = p.heroType || 'text';
-  document.getElementById('heroValue').value = p.heroValue || '';
-  document.getElementById('heroText').value = p.heroText || '';
-  document.getElementById('projectDetails').value = JSON.stringify(p.detailsArr || [], null, 2);
-  document.getElementById('projectGallery').value = JSON.stringify(p.galleryArr || [], null, 2);
-  document.getElementById('projectFormContainer').style.display = 'block';
-  document.getElementById('formTitle').innerText = '✏️ Edit Project';
-}
-function deleteProject(id) {
-  projectsData = projectsData.filter(p => p.id !== id);
-  saveProjectsToStorage();
-  renderAllProjects();
-  renderAdminList();
-}
-function saveProjectFromForm() {
-  const id = document.getElementById('projectId').value.trim();
-  if (!id) { alert("ID required"); return; }
-  const cat = document.getElementById('projectCategory').value;
-  const year = document.getElementById('projectYear').value;
-  const client = document.getElementById('projectClient').value;
-  const title = document.getElementById('projectTitle').value;
-  const desc = document.getElementById('projectDesc').value;
-  const toolsStr = document.getElementById('projectTools').value;
-  const toolsArr = toolsStr.split(',').map(s=>s.trim()).filter(s=>s);
-  const heroType = document.getElementById('heroType').value;
-  const heroValue = document.getElementById('heroValue').value;
-  const heroText = document.getElementById('heroText').value;
-  let detailsArr = [];
-  try { detailsArr = JSON.parse(document.getElementById('projectDetails').value); } catch(e) { detailsArr = []; }
-  let galleryArr = [];
-  try { galleryArr = JSON.parse(document.getElementById('projectGallery').value); } catch(e) { galleryArr = []; }
-  const newProject = { id, cat, year, client, title, desc, toolsArr, heroType, heroValue, heroText, detailsArr, galleryArr };
-  const existingIndex = projectsData.findIndex(p => p.id === id);
-  if (existingIndex !== -1) {
-    projectsData[existingIndex] = newProject;
-  } else {
-    projectsData.push(newProject);
-  }
-  saveProjectsToStorage();
-  renderAllProjects();
-  renderAdminList();
-  document.getElementById('projectFormContainer').style.display = 'none';
-  editingProjectId = null;
-  alert('Project saved locally!');
-}
-function exportData() {
-  const dataStr = JSON.stringify(projectsData, null, 2);
-  const blob = new Blob([dataStr], {type: "application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'portfolio_data.json';
-  a.click();
-  URL.revokeObjectURL(url);
-  alert("✅ تم تحميل الملف. قم برفعه إلى الاستضافة بنفس الاسم portfolio_data.json ليتمكن جميع الزوار من رؤية التعديلات.");
-}
-function importData(file) {
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    try {
-      const imported = JSON.parse(e.target.result);
-      if (Array.isArray(imported)) {
-        projectsData = imported;
-        saveProjectsToStorage();
-        renderAllProjects();
-        renderAdminList();
-        alert('Import successful!');
-      } else throw new Error();
-    } catch(err) { alert('Invalid JSON file'); }
-  };
-  reader.readAsText(file);
-}
-function loadRemoteDataManually() {
-  loadRemoteData().then(success => {
-    if(success) alert("تم تحميل البيانات من الخادم بنجاح");
-    else alert("لا يوجد ملف portfolio_data.json في الخادم. قم برفع الملف أولاً.");
-  });
-}
-function toggleAdmin() {
-  if (adminOpen) {
-    document.getElementById('adminPanel').classList.remove('open');
-    document.body.classList.remove('admin-open');
-    adminOpen = false;
-  } else {
-    const pwd = prompt("🔐 أدخل كلمة المرور للدخول إلى لوحة التحكم:");
-    if (pwd === ADMIN_PASSWORD) {
-      renderAdminList();
-      document.getElementById('adminPanel').classList.add('open');
-      document.body.classList.add('admin-open');
-      adminOpen = true;
-    } else {
-      alert("كلمة المرور غير صحيحة");
-    }
-  }
-}
-// Events
-document.addEventListener('keydown', (e) => {
-  if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-    e.preventDefault();
-    toggleAdmin();
-  }
-});
-document.getElementById('adminCloseBtn').addEventListener('click', toggleAdmin);
-document.getElementById('addNewProjectBtn').addEventListener('click', () => {
-  editingProjectId = null;
-  document.getElementById('projectId').value = '';
-  document.getElementById('projectCategory').value = 'Social Media';
-  document.getElementById('projectYear').value = '';
-  document.getElementById('projectClient').value = '';
-  document.getElementById('projectTitle').value = '';
-  document.getElementById('projectDesc').value = '';
-  document.getElementById('projectTools').value = '';
-  document.getElementById('heroType').value = 'text';
-  document.getElementById('heroValue').value = 'New Project';
-  document.getElementById('heroText').value = '';
-  document.getElementById('projectDetails').value = '[{"label":"Example","value":"Data","accent":false}]';
-  document.getElementById('projectGallery').value = '[]';
-  document.getElementById('projectFormContainer').style.display = 'block';
-  document.getElementById('formTitle').innerText = '➕ Add New Project';
-});
-document.getElementById('cancelFormBtn').addEventListener('click', () => {
-  document.getElementById('projectFormContainer').style.display = 'none';
-});
-document.getElementById('saveProjectBtn').addEventListener('click', saveProjectFromForm);
-document.getElementById('exportDataBtn').addEventListener('click', exportData);
-document.getElementById('importFileInput').addEventListener('change', (e) => {
-  if (e.target.files.length) importData(e.target.files[0]);
-  e.target.value = '';
-});
-document.getElementById('loadRemoteDataBtn').addEventListener('click', loadRemoteDataManually);
-
-// Showcase controls
-document.getElementById('showcaseClose').addEventListener('click', closeShowcase);
-document.getElementById('showcasePrev').addEventListener('click', () => navigateShowcase(-1));
-document.getElementById('showcaseNext').addEventListener('click', () => navigateShowcase(1));
-document.getElementById('showcaseOverlay').addEventListener('click', (e) => { if(e.target === document.getElementById('showcaseOverlay')) closeShowcase(); });
-document.addEventListener('keydown', (e) => {
-  const ov = document.getElementById('showcaseOverlay');
-  if (ov.classList.contains('open')) {
-    if (e.key === 'Escape') closeShowcase();
-    if (e.key === 'ArrowUp') navigateShowcase(-1);
-    if (e.key === 'ArrowDown') navigateShowcase(1);
-  }
-});
-
-// Observer for showcase sections
-let showcaseObserver = null;
-function observeShowcaseSections() {
-  if (showcaseObserver) showcaseObserver.disconnect();
-  showcaseObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const idx = parseInt(entry.target.getAttribute('data-index'), 10);
-        if (!isNaN(idx)) {
-          window.currentShowcaseIndex = idx;
-          document.getElementById('currentIdx').innerText = idx + 1;
-          const total = document.querySelectorAll('.showcase-section').length;
-          document.getElementById('totalIdx').innerText = total;
-        }
-      }
-    });
-  }, { threshold: 0.5 });
-  document.querySelectorAll('.showcase-section').forEach(s => showcaseObserver.observe(s));
-}
-const sectionsDivObserver = new MutationObserver(() => {
-  if (document.getElementById('showcaseOverlay').classList.contains('open')) observeShowcaseSections();
-});
-sectionsDivObserver.observe(document.getElementById('showcaseSections'), { childList: true, subtree: true });
-
-// ==================== INIT ====================
-(async function init() {
-  // First try to load remote data (for all visitors)
-  const loadedRemote = await loadRemoteData();
-  if (!loadedRemote) {
-    loadProjectsFromStorage(); // fallback to localStorage
-  }
-  renderAllProjects();
-  // Loading screen
-  setTimeout(() => { const ls = document.getElementById('loadingScreen'); if(ls) ls.classList.add('fade-out'); }, 800);
-})();
-
-// Scroll reveal
-const revealObserver = new IntersectionObserver(entries => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.12 });
-document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-// Smooth scroll
-document.querySelectorAll('a[href^="#"]').forEach(a => { a.addEventListener('click', e => { const href = a.getAttribute('href'); if(href && href !== '#'){ e.preventDefault(); const t = document.querySelector(href); if(t) t.scrollIntoView({ behavior: 'smooth' }); } }); });
-// Nav scroll effect
-window.addEventListener('scroll', () => { const nav = document.getElementById('navbar'); if(nav) nav.classList.toggle('scrolled', window.scrollY > 50); });
-// Custom cursor (only if not admin-open)
+// Cursor
 const cursor = document.getElementById('cursor');
 const follower = document.getElementById('cursor-follower');
 let mx = 0, my = 0, fx = 0, fy = 0;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; if(cursor && !document.body.classList.contains('admin-open')){ cursor.style.left = mx - 6 + 'px'; cursor.style.top = my - 6 + 'px'; } });
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; if(cursor){ cursor.style.left = mx - 6 + 'px'; cursor.style.top = my - 6 + 'px'; } });
 function animateFollower() {
   fx += (mx - fx - 18) * 0.12;
   fy += (my - fy - 18) * 0.12;
-  if(follower && !document.body.classList.contains('admin-open')){ follower.style.left = fx + 'px'; follower.style.top = fy + 'px'; }
+  if(follower){ follower.style.left = fx + 'px'; follower.style.top = fy + 'px'; }
   requestAnimationFrame(animateFollower);
 }
 animateFollower();
-function addHoverCursor(els) { els.forEach(el => { el.addEventListener('mouseenter', () => { if(cursor && !document.body.classList.contains('admin-open')) cursor.style.transform = 'scale(2)'; if(follower && !document.body.classList.contains('admin-open')) follower.style.transform = 'scale(1.5)'; if(follower && !document.body.classList.contains('admin-open')) follower.style.borderColor = 'var(--yellow)'; }); el.addEventListener('mouseleave', () => { if(cursor && !document.body.classList.contains('admin-open')) cursor.style.transform = 'scale(1)'; if(follower && !document.body.classList.contains('admin-open')) follower.style.transform = 'scale(1)'; if(follower && !document.body.classList.contains('admin-open')) follower.style.borderColor = 'var(--purple-light)'; }); }); }
+function addHoverCursor(els) { els.forEach(el => { el.addEventListener('mouseenter', () => { if(cursor) cursor.style.transform = 'scale(2)'; if(follower) follower.style.transform = 'scale(1.5)'; if(follower) follower.style.borderColor = 'var(--yellow)'; }); el.addEventListener('mouseleave', () => { if(cursor) cursor.style.transform = 'scale(1)'; if(follower) follower.style.transform = 'scale(1)'; if(follower) follower.style.borderColor = 'var(--purple-light)'; }); }); }
 addHoverCursor(document.querySelectorAll('a, button, .project-card'));
+
+window.addEventListener('load', () => { setTimeout(() => { const ls = document.getElementById('loadingScreen'); if(ls) ls.classList.add('fade-out'); }, 800); });
+window.addEventListener('scroll', () => { const nav = document.getElementById('navbar'); if(nav) nav.classList.toggle('scrolled', window.scrollY > 50); });
+const observer = new IntersectionObserver(entries => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+document.querySelectorAll('a[href^="#"]').forEach(a => { a.addEventListener('click', e => { const href = a.getAttribute('href'); if(href && href !== '#'){ e.preventDefault(); const t = document.querySelector(href); if(t) t.scrollIntoView({ behavior: 'smooth' }); } }); });
+
+// PROJECT DATA FOR SHOWCASE
+const projectsData = {
+  sm1: { title: 'Product Launch Campaign', cat: 'Instagram Post', images: [{title:'Hero Visual',desc:'Bold typography meets neon gradients',grad:'linear-gradient(135deg,#1a0a2e,#2a0a4e)'},{title:'Carousel Slide',desc:'Engaging product highlights',grad:'linear-gradient(135deg,#0a0a2e,#4a2a8e)'},{title:'Story Highlight',desc:'Motion ready asset',grad:'linear-gradient(135deg,#2a0a2e,#0a1a2e)'}] },
+  sm2: { title: 'Brand Awareness Series', cat: 'Story Design', images: [{title:'Quote Layout',desc:'Minimal and modern',grad:'linear-gradient(180deg,#00f5a0,#7B2FBE)'},{title:'Product Teaser',desc:'Vibrant gradient story',grad:'linear-gradient(180deg,#F8C200,#ff6b35)'},{title:'Countdown Sticker',desc:'Engagement focused',grad:'linear-gradient(180deg,#9B4FDE,#0a0a1a)'}] },
+  sm3: { title: 'Sale Event Visual', cat: 'Promotional Post', images: [{title:'Flash Sale Banner',desc:'50% OFF',grad:'linear-gradient(135deg,#F8C200,#ff6b35)'},{title:'Instagram Feed Post',desc:'Limited time',grad:'linear-gradient(135deg,#7B2FBE,#F8C200)'},{title:'Facebook Ad',desc:'Shop now',grad:'linear-gradient(135deg,#ff6b35,#7B2FBE)'}] },
+  p1: { title: 'Corporate Tri-Fold', cat: 'Brochure', images: [{title:'Brochure Cover',desc:'Front panel',grad:'linear-gradient(135deg,#0f0f1a,#1a0f0f)'},{title:'Inside Spread',desc:'Content layout',grad:'linear-gradient(135deg,#1a0f0f,#0f0f1a)'},{title:'Back Cover',desc:'Contact info',grad:'linear-gradient(135deg,#0a0a14,#140a14)'}] },
+  l1: { title: 'Nova Tech Brand', cat: 'Wordmark', images: [{title:'Primary Logo',desc:'Gradient wordmark',grad:'linear-gradient(135deg,#0a0a14,#140a14)'},{title:'Alternative Color',desc:'Yellow version',grad:'linear-gradient(135deg,#F8C200,#ff9a3c)'},{title:'Monochrome',desc:'Purple solid',grad:'#7B2FBE'}] },
+  u1: { title: 'Finance Tracker App', cat: 'Mobile App', images: [{title:'Dashboard Screen',desc:'Card-based overview',grad:'#1a1a2e'},{title:'Transaction List',desc:'Filter by category',grad:'#0f0f23'},{title:'Analytics',desc:'Animated charts',grad:'#1a1a2e'}] }
+};
+
+let currentProject = null, currentSecIdx = 0;
+const overlay = document.getElementById('showcaseOverlay');
+const sectionsDiv = document.getElementById('showcaseSections');
+const projTitle = document.getElementById('showcaseProjectTitle');
+const projCat = document.getElementById('showcaseProjectCat');
+const closeBtn = document.getElementById('showcaseClose');
+const prevBtn = document.getElementById('showcasePrev');
+const nextBtn = document.getElementById('showcaseNext');
+const currentSpan = document.getElementById('currentIdx');
+const totalSpan = document.getElementById('totalIdx');
+
+function openShowcase(projectKey) {
+  currentProject = projectsData[projectKey];
+  if(!currentProject) return;
+  currentSecIdx = 0;
+  projTitle.innerText = currentProject.title;
+  projCat.innerText = currentProject.cat;
+  sectionsDiv.innerHTML = '';
+  currentProject.images.forEach((img, idx) => {
+    const section = document.createElement('div');
+    section.className = 'showcase-section';
+    section.setAttribute('data-index', idx);
+    section.style.background = img.grad;
+    const content = document.createElement('div');
+    content.className = 'showcase-content';
+    content.innerHTML = `<h3>${img.title}</h3><p>${img.desc}</p>`;
+    section.appendChild(content);
+    sectionsDiv.appendChild(section);
+  });
+  totalSpan.innerText = currentProject.images.length;
+  currentSpan.innerText = 1;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('showcaseContainer').scrollTop = 0;
+  updateShowcaseProgress();
+}
+function closeShowcase() { overlay.classList.remove('open'); document.body.style.overflow = ''; }
+function updateShowcaseProgress() { currentSpan.innerText = currentSecIdx + 1; totalSpan.innerText = currentProject?.images.length || 0; }
+function navigateShowcase(delta) {
+  if(!currentProject) return;
+  const sections = document.querySelectorAll('.showcase-section');
+  let newIdx = currentSecIdx + delta;
+  if(newIdx < 0) newIdx = 0;
+  if(newIdx >= sections.length) newIdx = sections.length - 1;
+  if(newIdx !== currentSecIdx) { sections[newIdx].scrollIntoView({ behavior: 'smooth', block: 'start' }); currentSecIdx = newIdx; updateShowcaseProgress(); }
+}
+document.querySelectorAll('.project-card').forEach(card => {
+  const projectId = card.getAttribute('data-project');
+  if(projectId && projectsData[projectId]) {
+    card.addEventListener('click', (e) => { if(!e.target.closest('.overlay-btn')) openShowcase(projectId); });
+    const btn = card.querySelector('.overlay-btn');
+    if(btn) btn.addEventListener('click', (e) => { e.stopPropagation(); openShowcase(projectId); });
+  }
+});
+closeBtn.addEventListener('click', closeShowcase);
+prevBtn.addEventListener('click', () => navigateShowcase(-1));
+nextBtn.addEventListener('click', () => navigateShowcase(1));
+overlay.addEventListener('click', (e) => { if(e.target === overlay) closeShowcase(); });
+document.addEventListener('keydown', (e) => { if(overlay.classList.contains('open')){ if(e.key === 'Escape') closeShowcase(); if(e.key === 'ArrowUp') navigateShowcase(-1); if(e.key === 'ArrowDown') navigateShowcase(1); } });
+let showcaseObserver = null;
+function observeShowcaseSections(){ if(showcaseObserver) showcaseObserver.disconnect(); showcaseObserver = new IntersectionObserver(entries => { entries.forEach(entry => { if(entry.isIntersecting){ const idx = parseInt(entry.target.getAttribute('data-index'),10); if(!isNaN(idx)){ currentSecIdx = idx; updateShowcaseProgress(); } } }); }, { threshold:0.5 }); document.querySelectorAll('.showcase-section').forEach(s => showcaseObserver.observe(s)); }
+const originalObserver = new MutationObserver(() => { if(overlay.classList.contains('open')) observeShowcaseSections(); });
+originalObserver.observe(sectionsDiv, { childList: true, subtree: true });
 </script>
 </body>
 </html>
