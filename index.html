@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>DOUDOU — Graphic Designer Portfolio | Admin Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --yellow: #F8C200;
+  --yellow-light: #FFD700;
+  --yellow-dark: #E0A800;
+  --purple: #7B2FBE;
+  --purple-light: #9B4FDE;
+  --purple-dark: #5a1a9a;
+  --dark: #0D0D0D;
+  --dark2: #141414;
+  --dark3: #1C1C1C;
+  --white: #F5F5F5;
+  --gray: #888;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--dark);
+  color: var(--white);
+  font-family: 'Outfit', sans-serif;
+  overflow-x: hidden;
+  cursor: none;
+}
+@media (pointer: coarse), (max-width: 768px) {
+  body { cursor: auto; }
+  .cursor, .cursor-follower { display: none !important; }
+}
+/* عند فتح لوحة التحكم نلغي المؤشر المخصص */
+body.admin-open, body.admin-open .cursor, body.admin-open .cursor-follower {
+  cursor: auto !important;
+}
+body.admin-open .cursor, body.admin-open .cursor-follower {
+  display: none !important;
+}
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--dark);
+  z-index: 20000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1), visibility 0s linear 0.8s;
+  backdrop-filter: blur(8px);
+  pointer-events: all;
+}
+.loading-screen.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.loading-content {
+  text-align: center;
+}
+.loading-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(48px, 12vw, 120px);
+  font-weight: 800;
+  letter-spacing: -4px;
+  background: linear-gradient(135deg, var(--yellow), var(--purple-light), var(--yellow));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: loadingGlow 2s ease infinite, textShine 2.5s linear infinite;
+  margin-bottom: 20px;
+}
+.loading-sub {
+  font-family: 'Space Mono', monospace;
+  color: var(--purple-light);
+  letter-spacing: 4px;
+  font-size: 12px;
+  animation: pulseOpacity 1.6s ease infinite;
+}
+.loading-dots {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 32px;
+}
+.loading-dots span {
+  width: 10px;
+  height: 10px;
+  background: var(--yellow);
+  border-radius: 50%;
+  animation: dotBounce 1.2s infinite ease-in-out both;
+}
+.loading-dots span:nth-child(1) { animation-delay: -0.32s; background: var(--yellow); }
+.loading-dots span:nth-child(2) { animation-delay: -0.16s; background: var(--purple-light); }
+.loading-dots span:nth-child(3) { animation-delay: 0s; background: var(--yellow); }
+@keyframes loadingGlow {
+  0% { text-shadow: 0 0 0px rgba(248,194,0,0); }
+  50% { text-shadow: 0 0 20px rgba(248,194,0,0.6); }
+  100% { text-shadow: 0 0 0px rgba(248,194,0,0); }
+}
+@keyframes textShine {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@keyframes dotBounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1.2); opacity: 1; }
+}
+@keyframes pulseOpacity {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+.cursor {
+  width: 12px; height: 12px;
+  background: var(--yellow);
+  border-radius: 50%;
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 20001;
+  transition: transform 0.1s ease;
+  mix-blend-mode: difference;
+}
+.cursor-follower {
+  width: 36px; height: 36px;
+  border: 2px solid var(--purple-light);
+  border-radius: 50%;
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 20000;
+  transition: all 0.15s ease;
+  mix-blend-mode: difference;
+}
+.glitch-text {
+  position: relative;
+  display: inline-block;
+  animation: glitch-skew 3s infinite linear alternate-reverse;
+}
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--dark);
+}
+.glitch-text::before {
+  color: var(--purple-light);
+  z-index: -1;
+  animation: glitch-1 2s infinite linear alternate-reverse;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  transform: translate(-2px, -1px);
+}
+.glitch-text::after {
+  color: var(--yellow);
+  z-index: -2;
+  animation: glitch-2 2.2s infinite linear alternate-reverse;
+  clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+  transform: translate(2px, 1px);
+}
+@keyframes glitch-1 {
+  0% { transform: translate(0); opacity: 0.8; }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(-1px, -1px); }
+  60% { transform: translate(2px, 1px); }
+  80% { transform: translate(-1px, -2px); }
+  100% { transform: translate(0); }
+}
+@keyframes glitch-2 {
+  0% { transform: translate(0); opacity: 0.8; }
+  20% { transform: translate(2px, -1px); }
+  40% { transform: translate(1px, 1px); }
+  60% { transform: translate(-2px, 0); }
+  80% { transform: translate(1px, 2px); }
+  100% { transform: translate(0); }
+}
+@keyframes glitch-skew {
+  0% { transform: skew(0deg); }
+  10% { transform: skew(1deg); }
+  20% { transform: skew(-0.5deg); }
+  30% { transform: skew(0deg); }
+  100% { transform: skew(0deg); }
+}
+.marquee-section {
+  width: 100%;
+  background: linear-gradient(90deg, var(--dark2), rgba(123,47,190,0.2), var(--dark2));
+  border-block: 1px solid rgba(248,194,0,0.15);
+  padding: 18px 0;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  z-index: 5;
+}
+.marquee-content {
+  display: inline-block;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  animation: marqueeScroll 24s linear infinite;
+  color: var(--yellow);
+}
+.marquee-content span {
+  color: var(--purple-light);
+  margin: 0 32px;
+  font-size: 24px;
+  vertical-align: middle;
+}
+.marquee-content i {
+  font-style: normal;
+  margin: 0 20px;
+  color: rgba(248,194,0,0.4);
+}
+@keyframes marqueeScroll {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--dark); }
+::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 3px; }
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  padding: 20px 60px;
+  backdrop-filter: blur(20px);
+  background: rgba(13,13,13,0.8);
+  border-bottom: 1px solid rgba(248,194,0,0.1);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+nav.scrolled { padding: 14px 60px; border-bottom-color: rgba(248,194,0,0.25); }
+.nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 24px;
+  letter-spacing: -1px;
+  color: var(--yellow);
+  text-decoration: none;
+}
+.nav-logo span { color: var(--purple-light); }
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  list-style: none;
+  flex-wrap: wrap;
+}
+.nav-links a {
+  text-decoration: none;
+  color: var(--gray);
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: color 0.3s;
+  position: relative;
+  white-space: nowrap;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--yellow);
+  transition: width 0.3s;
+}
+.nav-links a:hover { color: var(--yellow); }
+.nav-links a:hover::after { width: 100%; }
+.nav-cta {
+  background: var(--yellow);
+  color: var(--dark) !important;
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-weight: 700;
+}
+.nav-cta:hover {
+  background: var(--purple) !important;
+  color: var(--white) !important;
+  transform: scale(1.05);
+}
+#home {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding-top: 80px;
+}
+.hero-bg { position: absolute; inset: 0; overflow: hidden; }
+.hero-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  animation: blobFloat 8s ease-in-out infinite alternate;
+}
+.hero-blob:nth-child(1) { width: 600px; height: 600px; background: var(--yellow); top: -200px; left: -200px; }
+.hero-blob:nth-child(2) { width: 500px; height: 500px; background: var(--purple); bottom: -100px; right: -100px; animation-delay: -4s; }
+.hero-blob:nth-child(3) { width: 300px; height: 300px; background: var(--yellow); top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.08; }
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(248,194,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(248,194,0,0.04) 1px, transparent 1px);
+  background-size: 80px 80px;
+  animation: gridShift 20s linear infinite;
+}
+.floating-shapes { position: absolute; inset: 0; pointer-events: none; }
+.shape {
+  position: absolute;
+  animation: floatShape 6s ease-in-out infinite alternate;
+}
+.shape-ring { width: 60px; height: 60px; border: 3px solid var(--purple-light); border-radius: 50%; opacity: 0.3; }
+.shape-dot { width: 14px; height: 14px; background: var(--yellow); border-radius: 50%; opacity: 0.6; }
+.shape-line { width: 80px; height: 3px; background: linear-gradient(90deg, var(--yellow), transparent); border-radius: 2px; opacity: 0.4; }
+.shape-square { width: 40px; height: 40px; border: 2px solid var(--yellow); opacity: 0.2; transform: rotate(45deg); }
+.hero-content {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  max-width: 1000px;
+  padding: 0 20px;
+}
+.hero-badge {
+  display: inline-flex;
+  background: rgba(123,47,190,0.2);
+  border: 1px solid rgba(123,47,190,0.4);
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--purple-light);
+  margin-bottom: 36px;
+}
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(48px, 9vw, 130px);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -4px;
+  margin-bottom: 32px;
+}
+.hero-title .line1 { display: block; color: var(--white); }
+.hero-title .line2 { display: block; color: transparent; -webkit-text-stroke: 2px var(--yellow); }
+.hero-title .line3 { display: block; background: linear-gradient(135deg, var(--yellow) 0%, var(--purple-light) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero-sub {
+  font-size: 16px;
+  color: var(--gray);
+  margin-bottom: 52px;
+  line-height: 1.7;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero-btns {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn-primary {
+  background: var(--yellow);
+  color: var(--dark);
+  padding: 14px 38px;
+  border-radius: 50px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--purple);
+  transform: translateX(-100%);
+  transition: transform 0.3s;
+  z-index: 0;
+}
+.btn-primary:hover::before { transform: translateX(0); }
+.btn-primary span { position: relative; z-index: 1; }
+.btn-primary:hover { color: var(--white); transform: translateY(-3px); box-shadow: 0 20px 40px rgba(123,47,190,0.4); }
+.btn-secondary {
+  border: 2px solid rgba(248,194,0,0.3);
+  color: var(--yellow);
+  padding: 14px 38px;
+  border-radius: 50px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+.btn-secondary:hover { background: rgba(248,194,0,0.1); border-color: var(--yellow); transform: translateY(-3px); }
+.stats-bar {
+  display: flex;
+  margin-top: 80px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-wrap: wrap;
+}
+.stat {
+  flex: 1;
+  padding: 28px 0;
+  text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  min-width: 120px;
+}
+.stat:last-child { border-right: none; }
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--yellow);
+  display: block;
+}
+.stat-label { font-size: 11px; color: var(--gray); margin-top: 6px; }
+#about {
+  min-height: 100vh;
+  padding: 100px 24px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+.about-inner {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 60px;
+  align-items: center;
+}
+.avatar-container {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+  height: auto;
+  aspect-ratio: 380 / 480;
+}
+.avatar-card {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--dark3), var(--dark2));
+  border-radius: 40px;
+  border: 2px solid rgba(248,194,0,0.15);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.char-svg {
+  width: 80%;
+  max-width: 280px;
+  filter: drop-shadow(0 20px 40px rgba(123,47,190,0.3));
+  animation: characterFloat 4s ease-in-out infinite alternate;
+}
+.avatar-tag {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--yellow);
+  color: var(--dark);
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.floating-badge {
+  position: absolute;
+  background: var(--dark3);
+  border: 1px solid rgba(123,47,190,0.3);
+  border-radius: 16px;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: badgeFloat 4s ease-in-out infinite alternate;
+  backdrop-filter: blur(10px);
+  font-size: 12px;
+}
+.fb1 { top: 10px; right: -10px; }
+.fb2 { top: 120px; left: -20px; }
+.fb3 { bottom: 60px; right: -15px; }
+.section-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--yellow);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.about-heading {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(32px, 4vw, 60px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  margin-bottom: 32px;
+}
+.about-heading .hl { color: var(--yellow); }
+.about-desc {
+  font-size: 15px;
+  line-height: 1.8;
+  color: rgba(245,245,245,0.7);
+  margin-bottom: 20px;
+}
+.skills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 40px;
+}
+.skill-chip {
+  background: rgba(123,47,190,0.15);
+  border: 1px solid rgba(123,47,190,0.3);
+  color: var(--purple-light);
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 12px;
+  transition: all 0.3s;
+}
+.portfolio-section {
+  padding: 90px 24px;
+  position: relative;
+}
+.section-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+.section-number {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--purple-light);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: block;
+}
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(38px, 6vw, 80px);
+  font-weight: 800;
+  letter-spacing: -3px;
+  line-height: 0.95;
+}
+.section-title .accent { color: var(--yellow); }
+.section-title .outline { color: transparent; -webkit-text-stroke: 2px rgba(248,194,0,0.4); }
+.behance-grid {
+  max-width: 1300px;
+  margin: 0 auto;
+  columns: 3;
+  column-gap: 24px;
+}
+.project-card {
+  break-inside: avoid;
+  margin-bottom: 24px;
+  border-radius: 20px;
+  background: var(--dark2);
+  border: 1px solid rgba(255,255,255,0.05);
+  cursor: pointer;
+  transition: all 0.4s;
+}
+.project-card:hover { transform: translateY(-8px); border-color: rgba(248,194,0,0.3); }
+.card-visual {
+  width: 100%;
+  background: linear-gradient(135deg, var(--dark3), var(--dark));
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  min-height: 200px;
+}
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.4s;
+  z-index: 2;
+}
+.project-card:hover .card-overlay { opacity: 1; }
+.overlay-btn {
+  background: var(--yellow);
+  color: var(--dark);
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+}
+.card-info { padding: 20px 24px; }
+.card-cat {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--yellow);
+  margin-bottom: 8px;
+}
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.card-desc {
+  font-size: 13px;
+  color: var(--gray);
+}
+#contact { padding: 90px 24px; text-align: center; position: relative; }
+.contact-heading {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(42px, 7vw, 100px);
+  font-weight: 800;
+  letter-spacing: -4px;
+  line-height: 0.9;
+  margin-bottom: 32px;
+}
+.contact-heading .big { color: var(--yellow); display: block; }
+.contact-links {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 60px;
+}
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--dark2);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 12px 24px;
+  border-radius: 50px;
+  text-decoration: none;
+  color: var(--white);
+  transition: all 0.3s;
+  font-size: 14px;
+}
+footer {
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding: 40px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--gray);
+  font-size: 12px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+footer strong { color: var(--yellow); }
+.reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.showcase-overlay {
+  position: fixed; inset: 0; z-index: 20000;
+  background: #0a0a0a; opacity: 0; visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0s linear 0.5s;
+}
+.showcase-overlay.open { opacity: 1; visibility: visible; transition: opacity 0.5s ease, visibility 0s; }
+.showcase-container { width: 100%; height: 100%; overflow-y: auto; scroll-behavior: smooth; position: relative; }
+.showcase-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 32px; background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+  backdrop-filter: blur(12px); pointer-events: none;
+}
+.showcase-header-left { pointer-events: auto; }
+.showcase-project-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--white); }
+.showcase-project-cat { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--yellow); text-transform: uppercase; letter-spacing: 2px; }
+.showcase-close {
+  width: 44px; height: 44px; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 22px; color: var(--white); transition: all 0.3s;
+  pointer-events: auto; border: 1px solid rgba(255,255,255,0.1);
+}
+.showcase-section {
+  min-height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center;
+  position: relative; border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.showcase-content {
+  position: relative; z-index: 2; max-width: 800px; text-align: center;
+  padding: 32px; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+  border-radius: 32px; margin: 20px;
+}
+.showcase-content h3 { font-family: 'Syne', sans-serif; font-size: clamp(24px, 5vw, 48px); font-weight: 800; margin-bottom: 16px; color: var(--yellow); }
+.showcase-nav {
+  position: fixed; bottom: 28px; right: 28px; display: flex; gap: 12px; z-index: 100;
+  pointer-events: none;
+}
+.showcase-nav-btn {
+  width: 48px; height: 48px; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 20px; color: var(--white); transition: all 0.3s;
+  pointer-events: auto; border: 1px solid rgba(255,255,255,0.1);
+}
+.showcase-progress {
+  position: fixed; bottom: 28px; left: 28px; z-index: 100;
+  font-family: 'Space Mono', monospace; font-size: 12px;
+  background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+  padding: 6px 14px; border-radius: 40px; color: var(--gray);
+  pointer-events: none;
+}
+@keyframes blobFloat { 0% { transform: scale(1); } 100% { transform: scale(1.2) translate(30px, -20px); } }
+@keyframes gridShift { 0% { background-position: 0 0; } 100% { background-position: 80px 80px; } }
+@keyframes floatShape { 0% { transform: translateY(0); } 100% { transform: translateY(-20px); } }
+@keyframes characterFloat { 0% { transform: translateY(0); } 100% { transform: translateY(-15px); } }
+@keyframes badgeFloat { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
+@media (max-width: 1024px) {
+  .behance-grid { columns: 2; }
+  .about-inner { gap: 48px; }
+}
+@media (max-width: 768px) {
+  nav { padding: 16px 20px; }
+  .nav-links { gap: 16px; justify-content: center; margin-top: 8px; width: 100%; }
+  .nav-links a { font-size: 10px; white-space: nowrap; }
+  .nav-logo { font-size: 20px; }
+  .hero-title { letter-spacing: -2px; }
+  .stats-bar .stat { flex-basis: 50%; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .about-inner { grid-template-columns: 1fr; text-align: center; }
+  .section-tag { justify-content: center; }
+  .skills-row { justify-content: center; }
+  .floating-badge { transform: scale(0.8); }
+  .fb1, .fb2, .fb3 { display: none; }
+  .avatar-container { max-width: 280px; }
+  .showcase-header { padding: 16px 20px; }
+  .showcase-project-title { font-size: 16px; }
+  .showcase-close { width: 40px; height: 40px; font-size: 18px; }
+  .showcase-nav-btn { width: 40px; height: 40px; font-size: 16px; }
+  .showcase-progress { bottom: 18px; left: 18px; font-size: 10px; }
+}
+@media (max-width: 600px) {
+  .behance-grid { columns: 1; }
+  .hero-btns .btn-primary, .hero-btns .btn-secondary { padding: 12px 28px; font-size: 14px; }
+  .stat-num { font-size: 28px; }
+  .portfolio-section { padding: 60px 16px; }
+  .card-info { padding: 16px; }
+}
+@media (max-width: 480px) {
+  .hero-title { font-size: 42px; }
+  .hero-badge { font-size: 9px; margin-bottom: 20px; }
+  .nav-links { gap: 12px; }
+}
+/* Admin Panel Styles */
+.admin-trigger-hint {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(10px);
+  padding: 6px 12px;
+  border-radius: 30px;
+  font-size: 10px;
+  font-family: monospace;
+  color: rgba(255,255,255,0.3);
+  pointer-events: none;
+}
+.admin-panel {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 30000;
+  background: rgba(0,0,0,0.95);
+  backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 40px 20px;
+  overflow-y: auto;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  cursor: auto !important;
+}
+.admin-panel.open {
+  opacity: 1;
+  visibility: visible;
+}
+.admin-container {
+  max-width: 900px;
+  width: 100%;
+  background: var(--dark2);
+  border-radius: 32px;
+  border: 1px solid rgba(248,194,0,0.2);
+  padding: 24px;
+}
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.admin-header h2 {
+  font-family: 'Syne', sans-serif;
+  color: var(--yellow);
+}
+.admin-close {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+.projects-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 24px 0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+.project-admin-item {
+  background: var(--dark3);
+  border-radius: 16px;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.project-admin-title {
+  font-weight: bold;
+}
+.project-admin-actions {
+  display: flex;
+  gap: 8px;
+}
+.admin-btn {
+  background: rgba(123,47,190,0.3);
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.admin-btn-primary {
+  background: var(--yellow);
+  color: var(--dark);
+}
+.admin-btn-danger {
+  background: rgba(220,20,60,0.6);
+}
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 24px;
+}
+.admin-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.admin-form-group label {
+  font-size: 12px;
+  color: var(--gray);
+  text-transform: uppercase;
+}
+.admin-form-group input, .admin-form-group select, .admin-form-group textarea {
+  background: var(--dark);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 14px;
+  border-radius: 12px;
+  color: white;
+  font-family: inherit;
+}
+.gallery-items-editor {
+  background: var(--dark3);
+  padding: 12px;
+  border-radius: 16px;
+}
+.gallery-item-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+</style>
+</head>
+<body>
+
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-content">
+    <div class="loading-logo">DOUDOU</div>
+    <div class="loading-sub">GRAPHIC DESIGNER</div>
+    <div class="loading-dots"><span></span><span></span><span></span></div>
+  </div>
+</div>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+
+<nav id="navbar">
+  <a href="#home" class="nav-logo">D<span>•</span>DOUDOU</a>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li><li><a href="#about">About</a></li><li><a href="#social-media">Social Media</a></li>
+    <li><a href="#print">Print</a></li><li><a href="#logos">Logos</a></li><li><a href="#uiux">UI/UX</a></li>
+    <li><a href="#contact" class="nav-cta">Contact</a></li>
+  </ul>
+</nav>
+
+<section id="home">
+  <div class="hero-bg"><div class="hero-blob"></div><div class="hero-blob"></div><div class="hero-blob"></div><div class="hero-grid"></div></div>
+  <div class="floating-shapes"><div class="shape shape-ring" style="top:15%;left:10%"></div><div class="shape shape-dot" style="top:25%;left:20%"></div><div class="shape shape-ring" style="top:70%;right:12%"></div><div class="shape shape-dot" style="bottom:30%;right:20%"></div><div class="shape shape-line" style="top:40%;left:5%"></div><div class="shape shape-square" style="bottom:40%;left:15%"></div></div>
+  <div class="hero-content">
+    <div class="hero-badge">✦ Available for Projects</div>
+    <h1 class="hero-title"><span class="line1">Graphic</span><span class="line2 glitch-text" data-text="Designer">Designer</span><span class="line3">Portfolio</span></h1>
+    <p class="hero-sub">Turning ideas into visuals that feel alive — social media, print, logos, and UI/UX with a clean, modern edge.</p>
+    <div class="hero-btns"><a href="#social-media" class="btn-primary"><span>View Work</span></a><a href="#contact" class="btn-secondary">Let's Talk</a></div>
+    <div class="stats-bar"><div class="stat"><span class="stat-num">50+</span><div class="stat-label">Projects Done</div></div><div class="stat"><span class="stat-num">30+</span><div class="stat-label">Happy Clients</div></div><div class="stat"><span class="stat-num">3+</span><div class="stat-label">Years Experience</div></div><div class="stat"><span class="stat-num">4</span><div class="stat-label">Design Fields</div></div></div>
+  </div>
+</section>
+
+<div class="marquee-section"><div class="marquee-content">✦ CREATIVE DIRECTION ✦ BRAND IDENTITY ✦ SOCIAL MEDIA DESIGN ✦ PRINT & PACKAGING ✦ LOGO DESIGN ✦ UI/UX INTERFACES <span>✦</span> <i>DOUDOU STUDIO</i> <span>✦</span> ✦ CREATIVE DIRECTION ✦ BRAND IDENTITY ✦ SOCIAL MEDIA DESIGN ✦ PRINT & PACKAGING ✦ LOGO DESIGN ✦ UI/UX INTERFACES <span>✦</span> <i>DOUDOU STUDIO</i> <span>✦</span></div></div>
+
+<section id="about"><div class="about-inner"><div class="about-visual reveal"><div class="avatar-container"><div class="avatar-card"><div class="avatar-figure"><svg class="char-svg" viewBox="0 0 280 320" fill="none"><ellipse cx="140" cy="310" rx="70" ry="12" fill="rgba(123,47,190,0.3)"/><rect x="80" y="180" width="120" height="110" rx="20" fill="#7B2FBE"/><rect x="80" y="180" width="55" height="110" rx="20" fill="#6a28a3"/><polygon points="125,180 155,180 140,215" fill="white" opacity="0.9"/><rect x="40" y="185" width="42" height="24" rx="12" fill="#7B2FBE"/><rect x="198" y="185" width="42" height="24" rx="12" fill="#7B2FBE"/><circle cx="38" cy="197" r="14" fill="#F8C200"/><circle cx="242" cy="197" r="14" fill="#F8C200"/><rect x="252" y="185" width="5" height="30" rx="2.5" fill="white" transform="rotate(15,254,200)"/><polygon points="265,212 258,208 263,218" fill="var(--yellow)" transform="rotate(15,262,213)"/><rect x="120" y="155" width="40" height="30" rx="8" fill="#F8C200"/><ellipse cx="140" cy="130" rx="52" ry="56" fill="#F8C200"/><ellipse cx="140" cy="82" rx="52" ry="20" fill="#1a1a1a"/><rect x="88" y="82" width="104" height="22" fill="#1a1a1a"/><path d="M108 75 Q140 55 172 75" stroke="#333" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M95 88 Q115 68 140 65 Q165 68 185 88" fill="#1a1a1a"/><rect x="103" y="118" width="28" height="20" rx="8" fill="none" stroke="#1a1a1a" stroke-width="2.5"/><rect x="149" y="118" width="28" height="20" rx="8" fill="none" stroke="#1a1a1a" stroke-width="2.5"/><line x1="131" y1="128" x2="149" y2="128" stroke="#1a1a1a" stroke-width="2"/><circle cx="117" cy="128" r="5" fill="#1a1a1a"/><circle cx="163" cy="128" r="5" fill="#1a1a1a"/><circle cx="119" cy="126" r="2" fill="white"/><circle cx="165" cy="126" r="2" fill="white"/><path d="M125 148 Q140 162 155 148" stroke="#1a1a1a" stroke-width="2.5" fill="none" stroke-linecap="round"/><ellipse cx="88" cy="132" rx="8" ry="10" fill="#F8C200"/><ellipse cx="192" cy="132" rx="8" ry="10" fill="#F8C200"/><rect x="90" y="285" width="35" height="20" rx="10" fill="#1a1a1a"/><rect x="155" y="285" width="35" height="20" rx="10" fill="#1a1a1a"/><ellipse cx="107" cy="305" rx="18" ry="8" fill="#7B2FBE"/><ellipse cx="173" cy="305" rx="18" ry="8" fill="#7B2FBE"/><path d="M230 60 L234 68 L242 72 L234 76 L230 84 L226 76 L218 72 L226 68 Z" fill="#F8C200" opacity="0.8"/><path d="M45 100 L47 104 L51 106 L47 108 L45 112 L43 108 L39 106 L43 104 Z" fill="#9B4FDE" opacity="0.7"/></svg></div><div class="avatar-glow"></div></div><div class="avatar-tag">✦ Doudou — Graphic Designer</div><div class="floating-badge fb1"><div class="badge-icon">🎨</div><div><div class="badge-text">UI/UX Design</div><div class="badge-sub">Figma & Adobe XD</div></div></div><div class="floating-badge fb2"><div class="badge-icon">✦</div><div><div class="badge-text">Brand Identity</div><div class="badge-sub">50+ Projects</div></div></div><div class="floating-badge fb3"><div class="badge-icon">⚡</div><div><div class="badge-text">Fast Delivery</div><div class="badge-sub">Always on time</div></div></div></div></div><div class="about-text reveal reveal-delay-2"><div class="section-tag">Who I Am</div><h2 class="about-heading">Hi, I'm <span class="hl">Doudou</span><br><span class="hl2">Creative</span> Designer.</h2><p class="about-desc">A graphic designer who loves turning ideas into visuals that actually <strong>feel alive</strong>. I design social media posts, print materials, logos, and UI/UX interfaces with a clean and modern style, always trying to make every project look unique instead of "just another design".</p><p class="about-desc">I enjoy mixing <strong>creativity with simplicity</strong>, whether it's building a brand identity, designing an Instagram post, or creating an interface that feels smooth and easy to use.</p><div class="skills-row"><span class="skill-chip yellow">Social Media</span><span class="skill-chip">Print Design</span><span class="skill-chip yellow">Logo Design</span><span class="skill-chip">UI/UX</span><span class="skill-chip yellow">Brand Identity</span><span class="skill-chip">Adobe Photoshop</span><span class="skill-chip yellow">Illustrator</span><span class="skill-chip">Figma</span></div></div></div></section>
+
+<div class="marquee-section"><div class="marquee-content">✦ GRAPHIC DESIGN ✦ MOTION ✦ BRANDING ✦ UI/UX ✦ PRINT ✦ CREATIVE SOLUTIONS <span>⚡</span> <i>DOUDOU PORTFOLIO</i> <span>⚡</span> ✦ GRAPHIC DESIGN ✦ MOTION ✦ BRANDING ✦ UI/UX ✦ PRINT ✦ CREATIVE SOLUTIONS <span>⚡</span> <i>DOUDOU PORTFOLIO</i> <span>⚡</span></div></div>
+
+<!-- Dynamic sections -->
+<section id="social-media" class="portfolio-section"><div class="section-header reveal"><span class="section-number">01 — Portfolio</span><h2 class="section-title">Social <span class="accent">Media</span><br><span class="outline">Designs</span></h2></div><div id="social-media-grid" class="behance-grid"></div></section>
+<section id="print" class="portfolio-section"><div class="section-header reveal"><span class="section-number">02 — Portfolio</span><h2 class="section-title">Print <span class="accent">Materials</span><br><span class="outline">Portfolio</span></h2></div><div id="print-grid" class="behance-grid"></div></section>
+<section id="logos" class="portfolio-section"><div class="section-header reveal"><span class="section-number">03 — Portfolio</span><h2 class="section-title">Logo <span class="accent">&</span><br><span class="outline">Brand Identity</span></h2></div><div id="logos-grid" class="behance-grid"></div></section>
+<section id="uiux" class="portfolio-section"><div class="section-header reveal"><span class="section-number">04 — Portfolio</span><h2 class="section-title">UI<span class="accent">/</span>UX<br><span class="outline">Interfaces</span></h2></div><div id="uiux-grid" class="behance-grid"></div></section>
+
+<section id="contact"><div class="contact-inner"><div class="section-tag" style="justify-content:center;margin-bottom:24px;"><span style="width:40px;height:2px;background:var(--yellow);border-radius:2px;"></span> Let's Work Together</div><h2 class="contact-heading reveal"><span class="big">Got a</span><span class="big">Project?</span><span class="small" style="font-size:clamp(30px,4vw,60px);display:block;">Let's make it happen</span></h2><p class="contact-sub reveal reveal-delay-1">I'm always open to discussing new creative projects, brand identities, and design challenges. Let's build something great together.</p><div class="contact-links reveal reveal-delay-2"><a href="mailto:doudou@design.com" class="contact-link"><div class="icon">✉</div> doudou@design.com</a><a href="#" class="contact-link"><div class="icon">in</div> LinkedIn</a><a href="#" class="contact-link"><div class="icon">Be</div> Behance</a><a href="#" class="contact-link"><div class="icon">▷</div> Instagram</a></div><a href="mailto:doudou@design.com" class="btn-primary reveal reveal-delay-3" style="display:inline-flex;"><span>Start a Project ✦</span></a></div></section>
+
+<div class="showcase-overlay" id="showcaseOverlay"><div class="showcase-container" id="showcaseContainer"><div class="showcase-header"><div class="showcase-header-left"><div class="showcase-project-title" id="showcaseProjectTitle"></div><div class="showcase-project-cat" id="showcaseProjectCat"></div></div><div class="showcase-close" id="showcaseClose">✕</div></div><div id="showcaseSections"></div><div class="showcase-nav"><div class="showcase-nav-btn" id="showcasePrev">↑</div><div class="showcase-nav-btn" id="showcaseNext">↓</div></div><div class="showcase-progress" id="showcaseProgress"><span id="currentIdx">1</span> / <span id="totalIdx">0</span></div></div></div>
+
+<footer><span>© 2026 <strong>DOUDOU</strong> — Graphic Designer</span><span>Designed with <strong>✦</strong> and creativity</span><span>All rights reserved</span></footer>
+
+<div class="admin-trigger-hint">🔧 Admin (Ctrl+Shift+A)</div>
+<div class="admin-panel" id="adminPanel">
+  <div class="admin-container">
+    <div class="admin-header">
+      <h2>📁 Project Manager</h2>
+      <button class="admin-close" id="adminCloseBtn">✕</button>
+    </div>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;">
+      <button id="exportDataBtn" class="admin-btn admin-btn-primary">📤 Export & Publish</button>
+      <label class="admin-btn admin-btn-primary" style="cursor: pointer;">📥 Load from File<input type="file" id="importFileInput" accept=".json" style="display: none;"></label>
+      <button id="addNewProjectBtn" class="admin-btn admin-btn-primary">➕ Add New Project</button>
+      <button id="loadRemoteDataBtn" class="admin-btn">🌐 Load from server (portfolio_data.json)</button>
+    </div>
+    <p style="font-size: 12px; color: var(--gray); margin-bottom: 16px;">📌 لجعل التعديلات مرئية للجميع: اضغط "Export & Publish" ثم ارفع الملف الذي تم تحميله إلى الاستضافة بنفس اسم <code>portfolio_data.json</code> في مجلد الموقع.</p>
+    <div id="projectsListAdmin" class="projects-list"></div>
+    <div id="projectFormContainer" style="display: none;">
+      <h3 id="formTitle">Add/Edit Project</h3>
+      <div class="admin-form" id="projectForm">
+        <div class="admin-form-group"><label>ID (unique)</label><input type="text" id="projectId" placeholder="e.g., sm_new1" required></div>
+        <div class="admin-form-group"><label>Category</label><select id="projectCategory"><option value="Social Media">Social Media</option><option value="Print">Print</option><option value="Logos">Logos</option><option value="UI/UX">UI/UX</option></select></div>
+        <div class="admin-form-group"><label>Year</label><input type="text" id="projectYear" placeholder="2025"></div>
+        <div class="admin-form-group"><label>Client</label><input type="text" id="projectClient" placeholder="Client name"></div>
+        <div class="admin-form-group"><label>Title</label><input type="text" id="projectTitle" placeholder="Project title"></div>
+        <div class="admin-form-group"><label>Description</label><textarea id="projectDesc" rows="3" placeholder="Short description"></textarea></div>
+        <div class="admin-form-group"><label>Tools (comma separated)</label><input type="text" id="projectTools" placeholder="Photoshop, Illustrator, Figma"></div>
+        <div class="admin-form-group"><label>Hero Visual Type</label><select id="heroType"><option value="gradient">Gradient Background</option><option value="solid">Solid Color</option><option value="text">Simple Text</option><option value="image">Image URL</option></select></div>
+        <div class="admin-form-group"><label>Hero Value (gradient: linear-gradient(135deg,#F8C200,#7B2FBE) / solid: #F8C200 / text: 'NEW' / image: https://...)</label><input type="text" id="heroValue" placeholder="e.g., linear-gradient(135deg,#F8C200,#7B2FBE)"></div>
+        <div class="admin-form-group"><label>Hero Text (optional, shown inside)</label><input type="text" id="heroText" placeholder="LAUNCH"></div>
+        <div class="admin-form-group"><label>Details (JSON array of {label, value, accent})</label><textarea id="projectDetails" rows="4" placeholder='[{"label":"Platform","value":"Instagram","accent":false}]'></textarea></div>
+        <div class="admin-form-group"><label>Gallery Items (JSON array of {bg, content})</label><textarea id="projectGallery" rows="6" placeholder='[{"bg":"linear-gradient(...)","content":"<div>My design</div>"}]'></textarea></div>
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button type="button" id="cancelFormBtn" class="admin-btn">Cancel</button>
+          <button type="button" id="saveProjectBtn" class="admin-btn admin-btn-primary">Save Project</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== PASSWORD PROTECTION ====================
+const ADMIN_PASSWORD = "admin123"; // يمكنك تغييرها هنا
+
+// ==================== DEFAULT PROJECTS ====================
+const DEFAULT_PROJECTS = [
+  { id: "sm1", cat: "Social Media", year: "2024", client: "NovaBrand Co.", title: "Product Launch Campaign", desc: "A high-impact Instagram campaign designed for a product launch.", toolsArr: ["Photoshop","Illustrator"], heroType: "text", heroValue: "NEW", heroText: "NEW", detailsArr: [{label:"Platform",value:"Instagram",accent:false},{label:"Posts",value:"12 Assets",accent:true}], galleryArr: [{bg:"linear-gradient(135deg,#1a0a2e,#2a0a4e)",content:"<div style='text-align:center;padding:40px;font-size:32px;color:white;'>NEW ARRIVAL</div>"}] },
+  { id: "sm2", cat: "Social Media", year: "2024", client: "Horizon Agency", title: "Brand Awareness Series", desc: "Story templates for consistent brand presence.", toolsArr: ["Figma"], heroType: "text", heroValue: "STORY", heroText: "STORY", detailsArr: [{label:"Templates",value:"8 Designs",accent:true}], galleryArr: [] },
+  { id: "sm3", cat: "Social Media", year: "2024", client: "Flash Sale Store", title: "Sale Event Visual", desc: "Promotional graphics for flash sale.", toolsArr: ["Photoshop"], heroType: "text", heroValue: "50% OFF", heroText: "50% OFF", detailsArr: [{label:"CTR Lift",value:"+34%",accent:true}], galleryArr: [] },
+  { id: "p1", cat: "Print", year: "2023", client: "Prime Solutions Ltd.", title: "Corporate Tri-Fold", desc: "Professional tri-fold brochure.", toolsArr: ["InDesign"], heroType: "text", heroValue: "BROCHURE", heroText: "BROCHURE", detailsArr: [{label:"Size",value:"A4 Tri-Fold",accent:false}], galleryArr: [] },
+  { id: "l1", cat: "Logos", year: "2024", client: "Nova Tech Inc.", title: "Nova Tech Brand", desc: "Complete brand identity for tech startup.", toolsArr: ["Illustrator"], heroType: "text", heroValue: "NOVA", heroText: "NOVA", detailsArr: [{label:"Variants",value:"6 Versions",accent:true}], galleryArr: [] },
+  { id: "u1", cat: "UI/UX", year: "2024", client: "FinFlow App", title: "Finance Tracker App", desc: "Dark dashboard UI/UX for finance app.", toolsArr: ["Figma"], heroType: "text", heroValue: "UI/UX", heroText: "UI/UX", detailsArr: [{label:"Screens",value:"24 Screens",accent:true}], galleryArr: [] }
+];
+
+let projectsData = [];
+
+// ==================== DATA STORAGE (Local + Remote) ====================
+function saveProjectsToStorage() {
+  localStorage.setItem('doudou_portfolio_projects', JSON.stringify(projectsData));
+}
+function loadProjectsFromStorage() {
+  const stored = localStorage.getItem('doudou_portfolio_projects');
+  if (stored) {
+    projectsData = JSON.parse(stored);
+  } else {
+    projectsData = JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
+    saveProjectsToStorage();
+  }
+}
+// تحميل البيانات من ملف خارجي (لجميع الزوار)
+async function loadRemoteData() {
+  try {
+    const res = await fetch('portfolio_data.json?' + Date.now());
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        projectsData = data;
+        saveProjectsToStorage();
+        renderAllProjects();
+        if (typeof renderAdminList === 'function') renderAdminList();
+        console.log('✅ تم تحميل البيانات من الخادم');
+        return true;
+      }
+    }
+  } catch(e) { console.log('لا يوجد ملف remote'); }
+  return false;
+}
+
+// ==================== RENDER PROJECTS ====================
+function getCategoryGridId(cat) {
+  if (cat === "Social Media") return "social-media-grid";
+  if (cat === "Print") return "print-grid";
+  if (cat === "Logos") return "logos-grid";
+  if (cat === "UI/UX") return "uiux-grid";
+  return "";
+}
+function renderProjectCard(p) {
+  let heroHtml = '';
+  if (p.heroType === 'gradient') {
+    heroHtml = `<div style="background:${p.heroValue};width:100%;height:100%;display:flex;align-items:center;justify-content:center;min-height:180px;">${p.heroText ? `<div style="font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:white;">${p.heroText}</div>` : ''}</div>`;
+  } else if (p.heroType === 'solid') {
+    heroHtml = `<div style="background:${p.heroValue};width:100%;height:100%;display:flex;align-items:center;justify-content:center;min-height:180px;">${p.heroText ? `<div style="font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:${p.heroValue === '#0D0D0D' ? 'white' : 'black'};">${p.heroText}</div>` : ''}</div>`;
+  } else if (p.heroType === 'text') {
+    heroHtml = `<div style="background:linear-gradient(135deg,var(--yellow),var(--purple-light));width:100%;height:100%;display:flex;align-items:center;justify-content:center;min-height:180px;"><div style="font-family:'Syne',sans-serif;font-size:42px;font-weight:800;color:var(--dark);">${p.heroValue}</div></div>`;
+  } else if (p.heroType === 'image') {
+    heroHtml = `<div style="background:url('${p.heroValue}') center/cover;width:100%;height:100%;min-height:180px;"></div>`;
+  }
+  return `<div class="project-card" data-project-id="${p.id}">
+    <div class="card-visual">
+      ${heroHtml}
+      <div class="card-overlay"><button class="overlay-btn">View</button></div>
+    </div>
+    <div class="card-info">
+      <div class="card-cat">${p.cat}</div>
+      <div class="card-title">${p.title}</div>
+      <div class="card-desc">${p.desc.substring(0,80)}${p.desc.length>80?'...':''}</div>
+    </div>
+  </div>`;
+}
+function renderAllProjects() {
+  const grids = { "Social Media": document.getElementById("social-media-grid"), "Print": document.getElementById("print-grid"), "Logos": document.getElementById("logos-grid"), "UI/UX": document.getElementById("uiux-grid") };
+  for (let g in grids) if(grids[g]) grids[g].innerHTML = '';
+  projectsData.forEach(p => {
+    const gridId = getCategoryGridId(p.cat);
+    if (gridId && document.getElementById(gridId)) {
+      document.getElementById(gridId).innerHTML += renderProjectCard(p);
+    }
+  });
+  attachProjectCardEvents();
+}
+function attachProjectCardEvents() {
+  document.querySelectorAll('.project-card').forEach(card => {
+    const pid = card.getAttribute('data-project-id');
+    card.addEventListener('click', (e) => {
+      if (!e.target.closest('.overlay-btn')) openShowcase(pid);
+    });
+    const btn = card.querySelector('.overlay-btn');
+    if (btn) btn.addEventListener('click', (e) => { e.stopPropagation(); openShowcase(pid); });
+  });
+}
+function getProjectById(id) { return projectsData.find(p => p.id === id); }
+
+// Showcase
+function openShowcase(projectId) {
+  const proj = getProjectById(projectId);
+  if (!proj) return;
+  const sectionsDiv = document.getElementById('showcaseSections');
+  const projTitle = document.getElementById('showcaseProjectTitle');
+  const projCat = document.getElementById('showcaseProjectCat');
+  projTitle.innerText = proj.title;
+  projCat.innerText = proj.cat;
+  sectionsDiv.innerHTML = '';
+  (proj.galleryArr || []).forEach((item, idx) => {
+    const section = document.createElement('div');
+    section.className = 'showcase-section';
+    section.setAttribute('data-index', idx);
+    section.style.background = item.bg || '#0a0a0a';
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'showcase-content';
+    contentDiv.innerHTML = item.content || `<h3>${proj.title}</h3><p>${proj.desc}</p>`;
+    section.appendChild(contentDiv);
+    sectionsDiv.appendChild(section);
+  });
+  if ((proj.galleryArr || []).length === 0) {
+    const fallback = document.createElement('div');
+    fallback.className = 'showcase-section';
+    fallback.style.background = '#0a0a0a';
+    fallback.innerHTML = `<div class="showcase-content"><h3>${proj.title}</h3><p>${proj.desc}</p><div>✨ More visuals coming soon</div></div>`;
+    sectionsDiv.appendChild(fallback);
+  }
+  document.getElementById('totalIdx').innerText = (proj.galleryArr || []).length || 1;
+  document.getElementById('currentIdx').innerText = 1;
+  document.getElementById('showcaseOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('showcaseContainer').scrollTop = 0;
+  window.currentShowcaseProject = proj;
+  window.currentShowcaseIndex = 0;
+}
+function closeShowcase() {
+  document.getElementById('showcaseOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function navigateShowcase(delta) {
+  const proj = window.currentShowcaseProject;
+  if (!proj) return;
+  const sections = document.querySelectorAll('.showcase-section');
+  let newIdx = window.currentShowcaseIndex + delta;
+  if (newIdx < 0) newIdx = 0;
+  if (newIdx >= sections.length) newIdx = sections.length - 1;
+  if (newIdx !== window.currentShowcaseIndex) {
+    sections[newIdx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.currentShowcaseIndex = newIdx;
+    document.getElementById('currentIdx').innerText = newIdx + 1;
+    document.getElementById('totalIdx').innerText = sections.length;
+  }
+}
+
+// ==================== ADMIN PANEL ====================
+let adminOpen = false;
+let editingProjectId = null;
+
+function renderAdminList() {
+  const container = document.getElementById('projectsListAdmin');
+  if (!container) return;
+  container.innerHTML = '';
+  projectsData.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'project-admin-item';
+    div.innerHTML = `<span class="project-admin-title"><strong>${p.title}</strong> (${p.cat})</span>
+      <div class="project-admin-actions">
+        <button class="admin-btn" data-action="edit" data-id="${p.id}">✏️ Edit</button>
+        <button class="admin-btn admin-btn-danger" data-action="delete" data-id="${p.id}">🗑️ Delete</button>
+      </div>`;
+    container.appendChild(div);
+  });
+  document.querySelectorAll('[data-action="edit"]').forEach(btn => btn.addEventListener('click', (e) => { editProject(btn.getAttribute('data-id')); }));
+  document.querySelectorAll('[data-action="delete"]').forEach(btn => btn.addEventListener('click', (e) => { if(confirm('Delete project?')) deleteProject(btn.getAttribute('data-id')); }));
+}
+function editProject(id) {
+  const p = getProjectById(id);
+  if (!p) return;
+  editingProjectId = id;
+  document.getElementById('projectId').value = p.id;
+  document.getElementById('projectCategory').value = p.cat;
+  document.getElementById('projectYear').value = p.year || '';
+  document.getElementById('projectClient').value = p.client || '';
+  document.getElementById('projectTitle').value = p.title;
+  document.getElementById('projectDesc').value = p.desc;
+  document.getElementById('projectTools').value = (p.toolsArr || []).join(', ');
+  document.getElementById('heroType').value = p.heroType || 'text';
+  document.getElementById('heroValue').value = p.heroValue || '';
+  document.getElementById('heroText').value = p.heroText || '';
+  document.getElementById('projectDetails').value = JSON.stringify(p.detailsArr || [], null, 2);
+  document.getElementById('projectGallery').value = JSON.stringify(p.galleryArr || [], null, 2);
+  document.getElementById('projectFormContainer').style.display = 'block';
+  document.getElementById('formTitle').innerText = '✏️ Edit Project';
+}
+function deleteProject(id) {
+  projectsData = projectsData.filter(p => p.id !== id);
+  saveProjectsToStorage();
+  renderAllProjects();
+  renderAdminList();
+}
+function saveProjectFromForm() {
+  const id = document.getElementById('projectId').value.trim();
+  if (!id) { alert("ID required"); return; }
+  const cat = document.getElementById('projectCategory').value;
+  const year = document.getElementById('projectYear').value;
+  const client = document.getElementById('projectClient').value;
+  const title = document.getElementById('projectTitle').value;
+  const desc = document.getElementById('projectDesc').value;
+  const toolsStr = document.getElementById('projectTools').value;
+  const toolsArr = toolsStr.split(',').map(s=>s.trim()).filter(s=>s);
+  const heroType = document.getElementById('heroType').value;
+  const heroValue = document.getElementById('heroValue').value;
+  const heroText = document.getElementById('heroText').value;
+  let detailsArr = [];
+  try { detailsArr = JSON.parse(document.getElementById('projectDetails').value); } catch(e) { detailsArr = []; }
+  let galleryArr = [];
+  try { galleryArr = JSON.parse(document.getElementById('projectGallery').value); } catch(e) { galleryArr = []; }
+  const newProject = { id, cat, year, client, title, desc, toolsArr, heroType, heroValue, heroText, detailsArr, galleryArr };
+  const existingIndex = projectsData.findIndex(p => p.id === id);
+  if (existingIndex !== -1) {
+    projectsData[existingIndex] = newProject;
+  } else {
+    projectsData.push(newProject);
+  }
+  saveProjectsToStorage();
+  renderAllProjects();
+  renderAdminList();
+  document.getElementById('projectFormContainer').style.display = 'none';
+  editingProjectId = null;
+  alert('Project saved locally!');
+}
+function exportData() {
+  const dataStr = JSON.stringify(projectsData, null, 2);
+  const blob = new Blob([dataStr], {type: "application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'portfolio_data.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  alert("✅ تم تحميل الملف. قم برفعه إلى الاستضافة بنفس الاسم portfolio_data.json ليتمكن جميع الزوار من رؤية التعديلات.");
+}
+function importData(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (Array.isArray(imported)) {
+        projectsData = imported;
+        saveProjectsToStorage();
+        renderAllProjects();
+        renderAdminList();
+        alert('Import successful!');
+      } else throw new Error();
+    } catch(err) { alert('Invalid JSON file'); }
+  };
+  reader.readAsText(file);
+}
+function loadRemoteDataManually() {
+  loadRemoteData().then(success => {
+    if(success) alert("تم تحميل البيانات من الخادم بنجاح");
+    else alert("لا يوجد ملف portfolio_data.json في الخادم. قم برفع الملف أولاً.");
+  });
+}
+function toggleAdmin() {
+  if (adminOpen) {
+    document.getElementById('adminPanel').classList.remove('open');
+    document.body.classList.remove('admin-open');
+    adminOpen = false;
+  } else {
+    const pwd = prompt("🔐 أدخل كلمة المرور للدخول إلى لوحة التحكم:");
+    if (pwd === ADMIN_PASSWORD) {
+      renderAdminList();
+      document.getElementById('adminPanel').classList.add('open');
+      document.body.classList.add('admin-open');
+      adminOpen = true;
+    } else {
+      alert("كلمة المرور غير صحيحة");
+    }
+  }
+}
+// Events
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+    e.preventDefault();
+    toggleAdmin();
+  }
+});
+document.getElementById('adminCloseBtn').addEventListener('click', toggleAdmin);
+document.getElementById('addNewProjectBtn').addEventListener('click', () => {
+  editingProjectId = null;
+  document.getElementById('projectId').value = '';
+  document.getElementById('projectCategory').value = 'Social Media';
+  document.getElementById('projectYear').value = '';
+  document.getElementById('projectClient').value = '';
+  document.getElementById('projectTitle').value = '';
+  document.getElementById('projectDesc').value = '';
+  document.getElementById('projectTools').value = '';
+  document.getElementById('heroType').value = 'text';
+  document.getElementById('heroValue').value = 'New Project';
+  document.getElementById('heroText').value = '';
+  document.getElementById('projectDetails').value = '[{"label":"Example","value":"Data","accent":false}]';
+  document.getElementById('projectGallery').value = '[]';
+  document.getElementById('projectFormContainer').style.display = 'block';
+  document.getElementById('formTitle').innerText = '➕ Add New Project';
+});
+document.getElementById('cancelFormBtn').addEventListener('click', () => {
+  document.getElementById('projectFormContainer').style.display = 'none';
+});
+document.getElementById('saveProjectBtn').addEventListener('click', saveProjectFromForm);
+document.getElementById('exportDataBtn').addEventListener('click', exportData);
+document.getElementById('importFileInput').addEventListener('change', (e) => {
+  if (e.target.files.length) importData(e.target.files[0]);
+  e.target.value = '';
+});
+document.getElementById('loadRemoteDataBtn').addEventListener('click', loadRemoteDataManually);
+
+// Showcase controls
+document.getElementById('showcaseClose').addEventListener('click', closeShowcase);
+document.getElementById('showcasePrev').addEventListener('click', () => navigateShowcase(-1));
+document.getElementById('showcaseNext').addEventListener('click', () => navigateShowcase(1));
+document.getElementById('showcaseOverlay').addEventListener('click', (e) => { if(e.target === document.getElementById('showcaseOverlay')) closeShowcase(); });
+document.addEventListener('keydown', (e) => {
+  const ov = document.getElementById('showcaseOverlay');
+  if (ov.classList.contains('open')) {
+    if (e.key === 'Escape') closeShowcase();
+    if (e.key === 'ArrowUp') navigateShowcase(-1);
+    if (e.key === 'ArrowDown') navigateShowcase(1);
+  }
+});
+
+// Observer for showcase sections
+let showcaseObserver = null;
+function observeShowcaseSections() {
+  if (showcaseObserver) showcaseObserver.disconnect();
+  showcaseObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const idx = parseInt(entry.target.getAttribute('data-index'), 10);
+        if (!isNaN(idx)) {
+          window.currentShowcaseIndex = idx;
+          document.getElementById('currentIdx').innerText = idx + 1;
+          const total = document.querySelectorAll('.showcase-section').length;
+          document.getElementById('totalIdx').innerText = total;
+        }
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.showcase-section').forEach(s => showcaseObserver.observe(s));
+}
+const sectionsDivObserver = new MutationObserver(() => {
+  if (document.getElementById('showcaseOverlay').classList.contains('open')) observeShowcaseSections();
+});
+sectionsDivObserver.observe(document.getElementById('showcaseSections'), { childList: true, subtree: true });
+
+// ==================== INIT ====================
+(async function init() {
+  // First try to load remote data (for all visitors)
+  const loadedRemote = await loadRemoteData();
+  if (!loadedRemote) {
+    loadProjectsFromStorage(); // fallback to localStorage
+  }
+  renderAllProjects();
+  // Loading screen
+  setTimeout(() => { const ls = document.getElementById('loadingScreen'); if(ls) ls.classList.add('fade-out'); }, 800);
+})();
+
+// Scroll reveal
+const revealObserver = new IntersectionObserver(entries => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => { a.addEventListener('click', e => { const href = a.getAttribute('href'); if(href && href !== '#'){ e.preventDefault(); const t = document.querySelector(href); if(t) t.scrollIntoView({ behavior: 'smooth' }); } }); });
+// Nav scroll effect
+window.addEventListener('scroll', () => { const nav = document.getElementById('navbar'); if(nav) nav.classList.toggle('scrolled', window.scrollY > 50); });
+// Custom cursor (only if not admin-open)
+const cursor = document.getElementById('cursor');
+const follower = document.getElementById('cursor-follower');
+let mx = 0, my = 0, fx = 0, fy = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; if(cursor && !document.body.classList.contains('admin-open')){ cursor.style.left = mx - 6 + 'px'; cursor.style.top = my - 6 + 'px'; } });
+function animateFollower() {
+  fx += (mx - fx - 18) * 0.12;
+  fy += (my - fy - 18) * 0.12;
+  if(follower && !document.body.classList.contains('admin-open')){ follower.style.left = fx + 'px'; follower.style.top = fy + 'px'; }
+  requestAnimationFrame(animateFollower);
+}
+animateFollower();
+function addHoverCursor(els) { els.forEach(el => { el.addEventListener('mouseenter', () => { if(cursor && !document.body.classList.contains('admin-open')) cursor.style.transform = 'scale(2)'; if(follower && !document.body.classList.contains('admin-open')) follower.style.transform = 'scale(1.5)'; if(follower && !document.body.classList.contains('admin-open')) follower.style.borderColor = 'var(--yellow)'; }); el.addEventListener('mouseleave', () => { if(cursor && !document.body.classList.contains('admin-open')) cursor.style.transform = 'scale(1)'; if(follower && !document.body.classList.contains('admin-open')) follower.style.transform = 'scale(1)'; if(follower && !document.body.classList.contains('admin-open')) follower.style.borderColor = 'var(--purple-light)'; }); }); }
+addHoverCursor(document.querySelectorAll('a, button, .project-card'));
+</script>
+</body>
+</html>
