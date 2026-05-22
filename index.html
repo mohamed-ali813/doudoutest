@@ -1,14 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>DOUDOU — Graphic Designer Portfolio | 响应式作品集</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOUDOU — Graphic Designer Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
 <style>
-/* ---------- RESET & VARIABLES ---------- */
-* { margin: 0; padding: 0; box-sizing: border-box; }
+/* =====================================================
+   المتغيرات والألوان الأساسية
+   هنا نحدد كل الألوان التي تستخدمها في المشروع
+   لو بغيت تغير لون كافي تغيره هنا وراح يتغير في كل مكان
+   ===================================================== */
 :root {
   --yellow: #F8C200;
   --yellow-light: #FFD700;
@@ -21,45 +25,67 @@
   --dark3: #1C1C1C;
   --white: #F5F5F5;
   --gray: #888;
+  /* متغيرات الأنيميشن - تقدر تغير السرعة من هنا */
+  --transition-fast: 0.2s;
+  --transition-med: 0.4s;
+  --transition-slow: 0.8s;
+  --ease-bounce: cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+/* =====================================================
+   ريست عام - نلغي الماجن والبادينج الافتراضي للمتصفح
+   ===================================================== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+
+/* =====================================================
+   إعدادات الـ Body الرئيسية
+   ===================================================== */
 body {
   background: var(--dark);
   color: var(--white);
   font-family: 'Outfit', sans-serif;
   overflow-x: hidden;
-  cursor: none;
+  cursor: none; /* نخفي الكيرسر الافتراضي لأن عندنا كيرسر مخصص */
 }
-/* 触摸屏隐藏光标 */
-@media (pointer: coarse), (max-width: 768px) {
-  body { cursor: auto; }
-  .cursor, .cursor-follower { display: none !important; }
-}
-/* ---------- LOADING SCREEN ---------- */
+
+/* =====================================================
+   شريط التمرير المخصص
+   ===================================================== */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--dark); }
+::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--yellow); }
+
+/* =====================================================
+   شاشة اللودينج - تظهر عند تحميل الصفحة وبعدين تختفي
+   ===================================================== */
 .loading-screen {
   position: fixed;
   inset: 0;
   background: var(--dark);
-  z-index: 20000;
+  z-index: 99999;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1), visibility 0s linear 0.8s;
-  backdrop-filter: blur(8px);
-  pointer-events: all;
+  transition: opacity 0.9s var(--ease-bounce), visibility 0s linear 0.9s;
 }
 .loading-screen.fade-out {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 }
-.loading-content {
-  text-align: center;
+.loading-logo-wrap { display: flex; align-items: center; justify-content: center; }
+.loading-logo-img {
+  height: clamp(80px, 18vw, 160px);
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 30px rgba(248,194,0,0.4));
+  animation: pulseOpacity 2s ease infinite;
 }
-.loading-logo {
   font-family: 'Syne', sans-serif;
-  font-size: clamp(48px, 12vw, 120px);
+  font-size: clamp(56px, 14vw, 130px);
   font-weight: 800;
   letter-spacing: -4px;
   background: linear-gradient(135deg, var(--yellow), var(--purple-light), var(--yellow));
@@ -67,804 +93,1423 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: loadingGlow 2s ease infinite, textShine 2.5s linear infinite;
-  margin-bottom: 20px;
+  animation: textShine 2s linear infinite;
 }
 .loading-sub {
   font-family: 'Space Mono', monospace;
   color: var(--purple-light);
-  letter-spacing: 4px;
-  font-size: 12px;
-  animation: pulseOpacity 1.6s ease infinite;
+  letter-spacing: 6px;
+  font-size: 11px;
+  margin-top: 12px;
+  animation: pulseOpacity 1.4s ease infinite;
 }
+/* النقاط المتحركة في اللودينج */
 .loading-dots {
   display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin-top: 32px;
+  gap: 10px;
+  margin-top: 36px;
 }
 .loading-dots span {
-  width: 10px;
-  height: 10px;
-  background: var(--yellow);
+  width: 8px; height: 8px;
   border-radius: 50%;
   animation: dotBounce 1.2s infinite ease-in-out both;
 }
 .loading-dots span:nth-child(1) { animation-delay: -0.32s; background: var(--yellow); }
 .loading-dots span:nth-child(2) { animation-delay: -0.16s; background: var(--purple-light); }
 .loading-dots span:nth-child(3) { animation-delay: 0s; background: var(--yellow); }
-@keyframes loadingGlow {
-  0% { text-shadow: 0 0 0px rgba(248,194,0,0); }
-  50% { text-shadow: 0 0 20px rgba(248,194,0,0.6); }
-  100% { text-shadow: 0 0 0px rgba(248,194,0,0); }
+
+/* =====================================================
+   الكيرسر المخصص - يظهر فقط على أجهزة ماوس
+   على الموبايل يختفي تلقائياً
+   ===================================================== */
+.cursor, .cursor-follower { display: none; } /* مخفي افتراضياً */
+@media (pointer: fine) { /* يظهر فقط لو الجهاز عنده ماوس */
+  body { cursor: none; }
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--yellow);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 99998;
+    transition: transform 0.15s ease;
+    mix-blend-mode: difference;
+    display: block;
+  }
+  .cursor-follower {
+    width: 32px; height: 32px;
+    border: 2px solid var(--purple-light);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 99997;
+    transition: border-color 0.3s;
+    mix-blend-mode: difference;
+    display: block;
+  }
 }
-@keyframes textShine {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
-}
-@keyframes dotBounce {
-  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-  40% { transform: scale(1.2); opacity: 1; }
-}
-@keyframes pulseOpacity {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
-}
-/* ---------- CUSTOM CURSOR HIGH Z ---------- */
-.cursor {
-  width: 12px; height: 12px;
-  background: var(--yellow);
-  border-radius: 50%;
-  position: fixed;
-  top: 0; left: 0;
+
+/* =====================================================
+   طبقة التشويش (Noise) فوق كل شيء - تعطي إحساس خام
+   ===================================================== */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
   pointer-events: none;
-  z-index: 20001;
-  transition: transform 0.1s ease;
-  mix-blend-mode: difference;
+  z-index: 9990;
+  opacity: 0.35;
 }
-.cursor-follower {
-  width: 36px; height: 36px;
-  border: 2px solid var(--purple-light);
-  border-radius: 50%;
-  position: fixed;
-  top: 0; left: 0;
-  pointer-events: none;
-  z-index: 20000;
-  transition: all 0.15s ease;
-  mix-blend-mode: difference;
-}
-/* GLITCH EFFECT */
-.glitch-text {
-  position: relative;
-  display: inline-block;
-  animation: glitch-skew 3s infinite linear alternate-reverse;
-}
-.glitch-text::before,
-.glitch-text::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--dark);
-}
-.glitch-text::before {
-  color: var(--purple-light);
-  z-index: -1;
-  animation: glitch-1 2s infinite linear alternate-reverse;
-  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
-  transform: translate(-2px, -1px);
-}
-.glitch-text::after {
-  color: var(--yellow);
-  z-index: -2;
-  animation: glitch-2 2.2s infinite linear alternate-reverse;
-  clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
-  transform: translate(2px, 1px);
-}
-@keyframes glitch-1 {
-  0% { transform: translate(0); opacity: 0.8; }
-  20% { transform: translate(-2px, 1px); }
-  40% { transform: translate(-1px, -1px); }
-  60% { transform: translate(2px, 1px); }
-  80% { transform: translate(-1px, -2px); }
-  100% { transform: translate(0); }
-}
-@keyframes glitch-2 {
-  0% { transform: translate(0); opacity: 0.8; }
-  20% { transform: translate(2px, -1px); }
-  40% { transform: translate(1px, 1px); }
-  60% { transform: translate(-2px, 0); }
-  80% { transform: translate(1px, 2px); }
-  100% { transform: translate(0); }
-}
-@keyframes glitch-skew {
-  0% { transform: skew(0deg); }
-  10% { transform: skew(1deg); }
-  20% { transform: skew(-0.5deg); }
-  30% { transform: skew(0deg); }
-  100% { transform: skew(0deg); }
-}
-/* MARQUEE SEPARATOR */
-.marquee-section {
-  width: 100%;
-  background: linear-gradient(90deg, var(--dark2), rgba(123,47,190,0.2), var(--dark2));
-  border-block: 1px solid rgba(248,194,0,0.15);
-  padding: 18px 0;
-  overflow: hidden;
-  white-space: nowrap;
-  position: relative;
-  z-index: 5;
-}
-.marquee-content {
-  display: inline-block;
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  font-size: 18px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  animation: marqueeScroll 24s linear infinite;
-  color: var(--yellow);
-}
-.marquee-content span {
-  color: var(--purple-light);
-  margin: 0 32px;
-  font-size: 24px;
-  vertical-align: middle;
-}
-.marquee-content i {
-  font-style: normal;
-  margin: 0 20px;
-  color: rgba(248,194,0,0.4);
-}
-@keyframes marqueeScroll {
-  0% { transform: translateX(0%); }
-  100% { transform: translateX(-50%); }
-}
-/* ---------- GENERAL & RESPONSIVE STYLES ---------- */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--dark); }
-::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 3px; }
+
+/* =====================================================
+   شريط التنقل (Navbar)
+   ===================================================== */
 nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
   padding: 20px 60px;
-  backdrop-filter: blur(20px);
-  background: rgba(13,13,13,0.8);
-  border-bottom: 1px solid rgba(248,194,0,0.1);
-  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  background: rgba(13,13,13,0.75);
+  border-bottom: 1px solid rgba(248,194,0,0.08);
+  transition: all 0.35s ease;
 }
-nav.scrolled { padding: 14px 60px; border-bottom-color: rgba(248,194,0,0.25); }
+/* لما يسكرول الصفحة يصغر الناف */
+nav.scrolled {
+  padding: 12px 60px;
+  background: rgba(13,13,13,0.95);
+  border-bottom-color: rgba(248,194,0,0.2);
+}
 .nav-logo {
   font-family: 'Syne', sans-serif;
   font-weight: 800;
-  font-size: 24px;
+  font-size: 22px;
   letter-spacing: -1px;
   color: var(--yellow);
   text-decoration: none;
+  display: flex; align-items: center; gap: 6px;
+  position: relative;
+  z-index: 2;
 }
-.nav-logo span { color: var(--purple-light); }
+.nav-logo-img {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+.nav-logo-fallback { display: flex; align-items: center; gap: 6px; }
+.nav-logo-fallback span { color: var(--purple-light); }
 .nav-links {
-  display: flex;
-  align-items: center;
-  gap: 28px;
+  display: flex; align-items: center; gap: 32px;
   list-style: none;
-  flex-wrap: wrap;
 }
 .nav-links a {
   text-decoration: none;
   color: var(--gray);
   font-family: 'Space Mono', monospace;
-  font-size: 12px;
-  letter-spacing: 1px;
+  font-size: 11px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
   transition: color 0.3s;
   position: relative;
-  white-space: nowrap;
 }
+/* الخط اللي يظهر تحت الرابط عند الهوفر */
 .nav-links a::after {
   content: '';
   position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 2px;
+  bottom: -4px; left: 0;
+  width: 0; height: 1.5px;
   background: var(--yellow);
-  transition: width 0.3s;
+  transition: width 0.3s ease;
 }
 .nav-links a:hover { color: var(--yellow); }
 .nav-links a:hover::after { width: 100%; }
+/* زر Contact خاص */
 .nav-cta {
-  background: var(--yellow);
+  background: var(--yellow) !important;
   color: var(--dark) !important;
-  padding: 8px 20px;
+  padding: 9px 22px;
   border-radius: 50px;
   font-weight: 700;
+  transition: all 0.3s !important;
 }
-.nav-cta:hover {
-  background: var(--purple) !important;
-  color: var(--white) !important;
-  transform: scale(1.05);
+.nav-cta:hover { background: var(--purple) !important; color: var(--white) !important; transform: scale(1.05); }
+.nav-cta::after { display: none !important; }
+/* زر الهامبرغر للموبايل */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  z-index: 2;
 }
-/* Hero */
+.nav-toggle span {
+  width: 24px; height: 2px;
+  background: var(--yellow);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  display: block;
+}
+/* تحويل الهامبرغر إلى X */
+.nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* =====================================================
+   قسم الهيرو (الرئيسي)
+   ===================================================== */
 #home {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  min-height: 100svh; /* svh أفضل من vh على الموبايل */
+  display: flex; align-items: center; justify-content: center;
   position: relative;
   overflow: hidden;
-  padding-top: 80px;
+  padding-top: 100px;
+  padding-bottom: 40px;
 }
+/* الـ Blobs المضيئة في الخلفية */
 .hero-bg { position: absolute; inset: 0; overflow: hidden; }
 .hero-blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.15;
-  animation: blobFloat 8s ease-in-out infinite alternate;
+  filter: blur(90px);
+  opacity: 0.12;
+  animation: blobFloat 10s ease-in-out infinite alternate;
 }
-.hero-blob:nth-child(1) { width: 600px; height: 600px; background: var(--yellow); top: -200px; left: -200px; }
-.hero-blob:nth-child(2) { width: 500px; height: 500px; background: var(--purple); bottom: -100px; right: -100px; animation-delay: -4s; }
-.hero-blob:nth-child(3) { width: 300px; height: 300px; background: var(--yellow); top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.08; }
+.hero-blob:nth-child(1) { width: 700px; height: 700px; background: var(--yellow); top: -300px; left: -200px; animation-delay: 0s; }
+.hero-blob:nth-child(2) { width: 600px; height: 600px; background: var(--purple); bottom: -200px; right: -150px; animation-delay: -5s; }
+.hero-blob:nth-child(3) { width: 400px; height: 400px; background: var(--purple-light); top: 30%; left: 40%; opacity: 0.06; animation-delay: -2.5s; }
+/* شبكة الخطوط المتحركة في الخلفية */
 .hero-grid {
   position: absolute; inset: 0;
-  background-image: linear-gradient(rgba(248,194,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(248,194,0,0.04) 1px, transparent 1px);
+  background-image:
+    linear-gradient(rgba(248,194,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(248,194,0,0.03) 1px, transparent 1px);
   background-size: 80px 80px;
-  animation: gridShift 20s linear infinite;
+  animation: gridShift 25s linear infinite;
 }
+/* الأشكال العائمة الزخرفية */
 .floating-shapes { position: absolute; inset: 0; pointer-events: none; }
-.shape {
-  position: absolute;
-  animation: floatShape 6s ease-in-out infinite alternate;
-}
-.shape-ring { width: 60px; height: 60px; border: 3px solid var(--purple-light); border-radius: 50%; opacity: 0.3; }
-.shape-dot { width: 14px; height: 14px; background: var(--yellow); border-radius: 50%; opacity: 0.6; }
-.shape-line { width: 80px; height: 3px; background: linear-gradient(90deg, var(--yellow), transparent); border-radius: 2px; opacity: 0.4; }
-.shape-square { width: 40px; height: 40px; border: 2px solid var(--yellow); opacity: 0.2; transform: rotate(45deg); }
+.shape { position: absolute; animation: floatShape 6s ease-in-out infinite alternate; }
+.shape-ring { width: 50px; height: 50px; border: 2px solid var(--purple-light); border-radius: 50%; opacity: 0.25; }
+.shape-dot { width: 10px; height: 10px; background: var(--yellow); border-radius: 50%; opacity: 0.5; }
+.shape-line { width: 70px; height: 2px; background: linear-gradient(90deg, var(--yellow), transparent); opacity: 0.35; }
+.shape-square { width: 30px; height: 30px; border: 1.5px solid var(--yellow); opacity: 0.18; transform: rotate(45deg); }
+/* محتوى الهيرو */
 .hero-content {
   text-align: center;
   position: relative;
   z-index: 2;
-  max-width: 1000px;
-  padding: 0 20px;
+  max-width: 900px;
+  padding: 0 24px;
 }
+/* البادج الصغير في الأعلى */
 .hero-badge {
   display: inline-flex;
-  background: rgba(123,47,190,0.2);
-  border: 1px solid rgba(123,47,190,0.4);
-  padding: 8px 20px;
-  border-radius: 50px;
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: var(--purple-light);
-  margin-bottom: 36px;
-}
-.hero-title {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(48px, 9vw, 130px);
-  font-weight: 800;
-  line-height: 0.9;
-  letter-spacing: -4px;
-  margin-bottom: 32px;
-}
-.hero-title .line1 { display: block; color: var(--white); }
-.hero-title .line2 { display: block; color: transparent; -webkit-text-stroke: 2px var(--yellow); }
-.hero-title .line3 { display: block; background: linear-gradient(135deg, var(--yellow) 0%, var(--purple-light) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.hero-sub {
-  font-size: 16px;
-  color: var(--gray);
-  margin-bottom: 52px;
-  line-height: 1.7;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-}
-.hero-btns {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-.btn-primary {
-  background: var(--yellow);
-  color: var(--dark);
-  padding: 14px 38px;
-  border-radius: 50px;
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  text-decoration: none;
-  transition: all 0.3s;
-  position: relative;
-  overflow: hidden;
-  display: inline-flex;
   align-items: center;
   gap: 8px;
-}
-.btn-primary::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--purple);
-  transform: translateX(-100%);
-  transition: transform 0.3s;
-  z-index: 0;
-}
-.btn-primary:hover::before { transform: translateX(0); }
-.btn-primary span { position: relative; z-index: 1; }
-.btn-primary:hover { color: var(--white); transform: translateY(-3px); box-shadow: 0 20px 40px rgba(123,47,190,0.4); }
-.btn-secondary {
-  border: 2px solid rgba(248,194,0,0.3);
-  color: var(--yellow);
-  padding: 14px 38px;
-  border-radius: 50px;
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  text-decoration: none;
-  transition: all 0.3s;
-}
-.btn-secondary:hover { background: rgba(248,194,0,0.1); border-color: var(--yellow); transform: translateY(-3px); }
-.stats-bar {
-  display: flex;
-  margin-top: 80px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  flex-wrap: wrap;
-}
-.stat {
-  flex: 1;
-  padding: 28px 0;
-  text-align: center;
-  border-right: 1px solid rgba(255,255,255,0.06);
-  min-width: 120px;
-}
-.stat:last-child { border-right: none; }
-.stat-num {
-  font-family: 'Syne', sans-serif;
-  font-size: 36px;
-  font-weight: 800;
-  color: var(--yellow);
-  display: block;
-}
-.stat-label { font-size: 11px; color: var(--gray); margin-top: 6px; }
-/* About Section Responsive */
-#about {
-  min-height: 100vh;
-  padding: 100px 24px;
-  display: flex;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-}
-.about-inner {
-  max-width: 1300px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 60px;
-  align-items: center;
-}
-.avatar-container {
-  position: relative;
-  width: 100%;
-  max-width: 380px;
-  margin: 0 auto;
-  height: auto;
-  aspect-ratio: 380 / 480;
-}
-.avatar-card {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, var(--dark3), var(--dark2));
-  border-radius: 40px;
-  border: 2px solid rgba(248,194,0,0.15);
-  overflow: hidden;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-.char-svg {
-  width: 80%;
-  max-width: 280px;
-  filter: drop-shadow(0 20px 40px rgba(123,47,190,0.3));
-  animation: characterFloat 4s ease-in-out infinite alternate;
-}
-.avatar-tag {
-  position: absolute;
-  bottom: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--yellow);
-  color: var(--dark);
-  padding: 8px 20px;
-  border-radius: 50px;
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-.floating-badge {
-  position: absolute;
-  background: var(--dark3);
-  border: 1px solid rgba(123,47,190,0.3);
-  border-radius: 16px;
-  padding: 8px 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  animation: badgeFloat 4s ease-in-out infinite alternate;
-  backdrop-filter: blur(10px);
-  font-size: 12px;
-}
-.fb1 { top: 10px; right: -10px; }
-.fb2 { top: 120px; left: -20px; }
-.fb3 { bottom: 60px; right: -15px; }
-.section-tag {
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 3px;
-  color: var(--yellow);
-  margin-bottom: 24px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.about-heading {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(32px, 4vw, 60px);
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -2px;
-  margin-bottom: 32px;
-}
-.about-heading .hl { color: var(--yellow); }
-.about-desc {
-  font-size: 15px;
-  line-height: 1.8;
-  color: rgba(245,245,245,0.7);
-  margin-bottom: 20px;
-}
-.skills-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 40px;
-}
-.skill-chip {
   background: rgba(123,47,190,0.15);
-  border: 1px solid rgba(123,47,190,0.3);
-  color: var(--purple-light);
-  padding: 6px 16px;
+  border: 1px solid rgba(123,47,190,0.35);
+  padding: 8px 20px;
   border-radius: 50px;
-  font-size: 12px;
-  transition: all 0.3s;
-}
-/* Portfolio Grid */
-.portfolio-section {
-  padding: 90px 24px;
-  position: relative;
-}
-.section-header {
-  text-align: center;
-  margin-bottom: 60px;
-}
-.section-number {
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  color: var(--purple-light);
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  margin-bottom: 20px;
-  display: block;
-}
-.section-title {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(38px, 6vw, 80px);
-  font-weight: 800;
-  letter-spacing: -3px;
-  line-height: 0.95;
-}
-.section-title .accent { color: var(--yellow); }
-.section-title .outline { color: transparent; -webkit-text-stroke: 2px rgba(248,194,0,0.4); }
-.behance-grid {
-  max-width: 1300px;
-  margin: 0 auto;
-  columns: 3;
-  column-gap: 24px;
-}
-.project-card {
-  break-inside: avoid;
-  margin-bottom: 24px;
-  border-radius: 20px;
-  background: var(--dark2);
-  border: 1px solid rgba(255,255,255,0.05);
-  cursor: pointer;
-  transition: all 0.4s;
-}
-.project-card:hover { transform: translateY(-8px); border-color: rgba(248,194,0,0.3); }
-.card-visual {
-  width: 100%;
-  background: linear-gradient(135deg, var(--dark3), var(--dark));
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-.card-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.4s;
-  z-index: 2;
-}
-.project-card:hover .card-overlay { opacity: 1; }
-.overlay-btn {
-  background: var(--yellow);
-  color: var(--dark);
-  padding: 10px 20px;
-  border-radius: 50px;
-  font-weight: 700;
-  border: none;
-  cursor: pointer;
-}
-.card-info { padding: 20px 24px; }
-.card-cat {
   font-family: 'Space Mono', monospace;
   font-size: 10px;
   letter-spacing: 2px;
-  color: var(--yellow);
-  margin-bottom: 8px;
-}
-.card-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-.sm-mock { height: 280px; background: linear-gradient(135deg, #1a0a2e, #0d1a2e); display: flex; align-items: center; justify-content: center; }
-.print-mock { height: 320px; background: linear-gradient(135deg, #0f0f1a, #1a0f0f); display: flex; align-items: center; justify-content: center; }
-.logo-mock { height: 260px; background: linear-gradient(135deg, #0a0a14, #140a14); display: flex; align-items: center; justify-content: center; }
-.ui-mock { height: 280px; background: #1a1a2e; display: flex; align-items: center; justify-content: center; }
-.post-preview { width: 160px; height: 160px; border-radius: 16px; background: linear-gradient(135deg, var(--yellow), var(--purple)); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; }
-.brochure { width: 120px; height: 180px; background: white; border-radius: 6px; overflow: hidden; }
-.logo-display { font-family: 'Syne'; font-size: 42px; background: linear-gradient(135deg, var(--yellow), var(--purple-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.app-frame { width: 160px; height: 220px; background: #0f0f23; border-radius: 24px; overflow: hidden; }
-/* Contact */
-#contact { padding: 90px 24px; text-align: center; position: relative; }
-.contact-heading {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(42px, 7vw, 100px);
-  font-weight: 800;
-  letter-spacing: -4px;
-  line-height: 0.9;
+  color: var(--purple-light);
   margin-bottom: 32px;
+  animation: pulseOpacity 2.5s ease infinite;
 }
-.contact-heading .big { color: var(--yellow); display: block; }
-.contact-links {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 60px;
+.hero-badge::before { content: ''; width: 6px; height: 6px; background: #4ade80; border-radius: 50%; animation: pulse 2s ease infinite; }
+/* العنوان الرئيسي الكبير */
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(52px, 10vw, 140px);
+  font-weight: 800;
+  line-height: 0.88;
+  letter-spacing: -4px;
+  margin-bottom: 28px;
 }
-.contact-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--dark2);
-  border: 1px solid rgba(255,255,255,0.08);
-  padding: 12px 24px;
-  border-radius: 50px;
+.hero-title .line1 { display: block; color: var(--white); }
+.hero-title .line2 { display: block; color: transparent; -webkit-text-stroke: 2px var(--yellow); }
+.hero-title .line3 {
+  display: block;
+  background: linear-gradient(135deg, var(--yellow), var(--purple-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+/* تأثير الـ Glitch على النص */
+.glitch-text { position: relative; display: inline-block; animation: glitch-skew 4s infinite linear alternate-reverse; }
+.glitch-text::before, .glitch-text::after {
+  content: attr(data-text);
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: var(--dark);
+}
+.glitch-text::before {
+  color: var(--purple-light); z-index: -1;
+  animation: glitch-1 2.5s infinite linear alternate-reverse;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  transform: translate(-2px, -1px);
+}
+.glitch-text::after {
+  color: var(--yellow); z-index: -2;
+  animation: glitch-2 2.8s infinite linear alternate-reverse;
+  clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+  transform: translate(2px, 1px);
+}
+.hero-sub { font-size: 15px; color: var(--gray); margin-bottom: 44px; line-height: 1.8; max-width: 520px; margin-left: auto; margin-right: auto; }
+/* الأزرار */
+.hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 60px; }
+.btn-primary {
+  background: var(--yellow); color: var(--dark);
+  padding: 14px 36px; border-radius: 50px;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px;
   text-decoration: none;
-  color: var(--white);
-  transition: all 0.3s;
-  font-size: 14px;
+  transition: all 0.35s var(--ease-bounce);
+  position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; gap: 8px;
 }
+.btn-primary::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--purple);
+  transform: translateX(-101%); transition: transform 0.35s ease; z-index: 0;
+}
+.btn-primary:hover::before { transform: translateX(0); }
+.btn-primary span { position: relative; z-index: 1; }
+.btn-primary:hover { color: var(--white); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(123,47,190,0.4); }
+.btn-secondary {
+  border: 1.5px solid rgba(248,194,0,0.35);
+  color: var(--yellow); padding: 14px 36px; border-radius: 50px;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px;
+  text-decoration: none; transition: all 0.35s ease;
+}
+.btn-secondary:hover { background: rgba(248,194,0,0.08); border-color: var(--yellow); transform: translateY(-4px); }
+/* بار الإحصائيات */
+.stats-bar {
+  display: flex; border-top: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-wrap: wrap;
+}
+.stat { flex: 1; padding: 24px 0; text-align: center; border-right: 1px solid rgba(255,255,255,0.06); min-width: 100px; }
+.stat:last-child { border-right: none; }
+.stat-num { font-family: 'Syne', sans-serif; font-size: 34px; font-weight: 800; color: var(--yellow); display: block; }
+.stat-label { font-size: 10px; color: var(--gray); margin-top: 4px; letter-spacing: 1px; text-transform: uppercase; }
+
+/* =====================================================
+   شريط الماركي (النص المتحرك الأفقي)
+   ===================================================== */
+.marquee-section {
+  width: 100%;
+  background: linear-gradient(90deg, var(--dark2), rgba(123,47,190,0.15), var(--dark2));
+  border-block: 1px solid rgba(248,194,0,0.12);
+  padding: 16px 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.marquee-track { display: inline-block; animation: marqueeScroll 28s linear infinite; }
+.marquee-track:hover { animation-play-state: paused; } /* يتوقف عند الهوفر */
+.marquee-text {
+  display: inline-block;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--yellow);
+}
+.marquee-text .sep { color: var(--purple-light); margin: 0 24px; font-size: 20px; vertical-align: middle; }
+
+/* =====================================================
+   قسم About
+   ===================================================== */
+#about {
+  min-height: 100vh; padding: 120px 24px;
+  display: flex; align-items: center;
+  position: relative; overflow: hidden;
+}
+.about-inner {
+  max-width: 1260px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1.3fr;
+  gap: 80px; align-items: center; width: 100%;
+}
+.avatar-container {
+  position: relative; width: 100%; max-width: 360px; margin: 0 auto;
+  aspect-ratio: 3/4;
+}
+.avatar-card {
+  width: 100%; height: 100%;
+  background: linear-gradient(145deg, var(--dark3), var(--dark2));
+  border-radius: 32px;
+  border: 1.5px solid rgba(248,194,0,0.12);
+  overflow: hidden;
+  display: flex; align-items: flex-end; justify-content: center;
+  position: relative;
+}
+.avatar-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(248,194,0,0.06), transparent 70%);
+}
+.avatar-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: 32px;
+  animation: characterFloat 4s ease-in-out infinite alternate;
+}
+.avatar-glow {
+  position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%);
+  width: 60%; height: 60px;
+  background: radial-gradient(var(--purple), transparent);
+  opacity: 0.4; filter: blur(20px);
+  animation: glowPulse 3s ease infinite;
+}
+.avatar-tag {
+  position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%);
+  background: var(--yellow); color: var(--dark);
+  padding: 7px 20px; border-radius: 50px;
+  font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700;
+  white-space: nowrap; z-index: 2;
+}
+/* البادجات العائمة حول الأفاتار */
+.floating-badge {
+  position: absolute;
+  background: rgba(28,28,28,0.9);
+  border: 1px solid rgba(123,47,190,0.25);
+  border-radius: 14px; padding: 8px 14px;
+  display: flex; align-items: center; gap: 8px;
+  animation: badgeFloat 4s ease-in-out infinite alternate;
+  backdrop-filter: blur(12px);
+  font-size: 12px; z-index: 3;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+.fb1 { top: 16px; right: -20px; animation-delay: 0s; }
+.fb2 { top: 130px; left: -24px; animation-delay: -1.5s; }
+.fb3 { bottom: 70px; right: -20px; animation-delay: -3s; }
+.badge-icon { font-size: 18px; }
+.badge-text { font-size: 12px; font-weight: 600; }
+.badge-sub { font-size: 10px; color: var(--gray); }
+/* نص About */
+.section-tag {
+  font-family: 'Space Mono', monospace; font-size: 10px;
+  letter-spacing: 3px; color: var(--yellow);
+  margin-bottom: 20px; text-transform: uppercase;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-tag::before { content: ''; width: 30px; height: 1.5px; background: var(--yellow); }
+.about-heading {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(30px, 4vw, 58px);
+  font-weight: 800; line-height: 1.05; letter-spacing: -2px; margin-bottom: 28px;
+}
+.about-heading .hl { color: var(--yellow); }
+.about-heading .hl2 { color: var(--purple-light); }
+.about-desc { font-size: 15px; line-height: 1.85; color: rgba(245,245,245,0.65); margin-bottom: 18px; }
+/* شيبات المهارات */
+.skills-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 36px; }
+.skill-chip {
+  background: rgba(123,47,190,0.12); border: 1px solid rgba(123,47,190,0.25);
+  color: var(--purple-light); padding: 6px 14px; border-radius: 50px;
+  font-size: 11px; font-weight: 500; letter-spacing: 0.5px;
+  transition: all 0.25s ease;
+}
+.skill-chip:hover { background: rgba(123,47,190,0.25); border-color: var(--purple-light); transform: translateY(-2px); }
+.skill-chip.yellow { background: rgba(248,194,0,0.1); border-color: rgba(248,194,0,0.25); color: var(--yellow); }
+.skill-chip.yellow:hover { background: rgba(248,194,0,0.2); }
+
+/* =====================================================
+   قسم البورتفوليو (البطاقات)
+   ===================================================== */
+.portfolio-section { padding: 100px 24px; position: relative; }
+/* عنوان القسم */
+.section-header { text-align: center; margin-bottom: 64px; }
+.section-number {
+  font-family: 'Space Mono', monospace; font-size: 10px;
+  color: var(--purple-light); letter-spacing: 4px;
+  text-transform: uppercase; margin-bottom: 16px; display: block;
+}
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(40px, 7vw, 90px);
+  font-weight: 800; letter-spacing: -3px; line-height: 0.92;
+}
+.section-title .accent { color: var(--yellow); }
+.section-title .outline { color: transparent; -webkit-text-stroke: 1.5px rgba(248,194,0,0.35); }
+/* =====================================================
+   🎯 شبكة بطاقات المشاريع
+   هنا نستخدم CSS Columns لأنها أسهل للإضافة والتعديل
+   لو بغيت تغير عدد الكولومنات غير الرقم في .behance-grid
+   ===================================================== */
+.behance-grid {
+  max-width: 1280px; margin: 0 auto;
+  columns: 3; column-gap: 20px;
+}
+/* بطاقة مشروع واحدة */
+.project-card {
+  break-inside: avoid;
+  margin-bottom: 20px;
+  border-radius: 20px;
+  background: var(--dark2);
+  border: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer;
+  transition: transform 0.4s var(--ease-bounce), border-color 0.3s ease, box-shadow 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+.project-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(248,194,0,0.04), transparent);
+  opacity: 0; transition: opacity 0.4s;
+  pointer-events: none; z-index: 1;
+}
+.project-card:hover { transform: translateY(-10px) scale(1.01); border-color: rgba(248,194,0,0.25); box-shadow: 0 24px 60px rgba(0,0,0,0.5); }
+.project-card:hover::before { opacity: 1; }
+/* المنطقة البصرية للبطاقة (الصورة أو الموك أب) */
+.card-visual {
+  width: 100%; position: relative;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; min-height: 200px;
+}
+/* طبقة الهوفر اللي تظهر زر View */
+.card-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.35s ease; z-index: 5;
+}
+.project-card:hover .card-overlay { opacity: 1; }
+.overlay-btn {
+  background: var(--yellow); color: var(--dark);
+  padding: 10px 28px; border-radius: 50px;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
+  border: none; cursor: pointer;
+  transform: translateY(10px); transition: transform 0.35s var(--ease-bounce);
+  display: flex; align-items: center; gap: 8px;
+}
+.overlay-btn::after { content: '↗'; font-size: 16px; }
+.project-card:hover .overlay-btn { transform: translateY(0); }
+/* معلومات البطاقة */
+.card-info { padding: 20px 22px; position: relative; z-index: 2; }
+.card-cat { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--yellow); margin-bottom: 6px; text-transform: uppercase; }
+.card-title { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+.card-desc { font-size: 12px; color: var(--gray); line-height: 1.6; }
+/* =====================================================
+   أنواع موك أب البطاقات
+   لكل نوع بورتفوليو شكل مختلف
+   ===================================================== */
+.sm-mock { height: 260px; background: linear-gradient(135deg, #1a0a2e, #0d1a2e); }
+.print-mock { height: 300px; background: linear-gradient(135deg, #0f0f1a, #1a0f0f); }
+.logo-mock { height: 240px; background: linear-gradient(135deg, #0a0a14, #140a14); }
+.ui-mock { height: 260px; background: #1a1a2e; }
+.post-preview { width: 140px; height: 140px; border-radius: 16px; background: linear-gradient(135deg, var(--yellow), var(--purple)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: white; box-shadow: 0 20px 40px rgba(123,47,190,0.4); animation: cardFloat 3s ease-in-out infinite alternate; }
+.brochure { width: 110px; height: 160px; background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 16px 40px rgba(0,0,0,0.4); animation: cardFloat 3s ease-in-out infinite alternate; }
+.logo-display { font-family: 'Syne', sans-serif; font-size: 46px; font-weight: 800; background: linear-gradient(135deg, var(--yellow), var(--purple-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: pulseOpacity 2s ease infinite; }
+.app-frame { width: 150px; height: 200px; background: #0f0f23; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.6); animation: cardFloat 3s ease-in-out infinite alternate; }
+.card-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 1;
+  transition: transform 0.5s var(--ease-bounce);
+}
+.project-card:hover .card-img { transform: scale(1.05); }
+
+/* =====================================================
+   قسم Contact
+   ===================================================== */
+#contact { padding: 120px 24px; text-align: center; position: relative; overflow: hidden; }
+#contact::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, rgba(123,47,190,0.07), transparent 70%);
+  pointer-events: none;
+}
+.contact-inner { max-width: 680px; margin: 0 auto; position: relative; z-index: 2; }
+.contact-heading { font-family: 'Syne', sans-serif; font-size: clamp(50px, 8vw, 110px); font-weight: 800; letter-spacing: -4px; line-height: 0.88; margin-bottom: 28px; }
+.contact-heading .big { color: var(--yellow); display: block; }
+.contact-heading .small { font-size: clamp(24px, 3.5vw, 50px); display: block; color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.18); }
+.contact-sub { color: var(--gray); font-size: 15px; line-height: 1.75; margin-bottom: 48px; }
+.contact-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 52px; }
+.contact-link {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--dark2); border: 1px solid rgba(255,255,255,0.07);
+  padding: 12px 22px; border-radius: 50px;
+  text-decoration: none; color: var(--white); font-size: 13px; font-weight: 500;
+  transition: all 0.3s ease;
+}
+.contact-link:hover { border-color: var(--yellow); background: rgba(248,194,0,0.07); color: var(--yellow); transform: translateY(-3px); }
+.contact-link .icon { width: 30px; height: 30px; background: rgba(248,194,0,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.3s; }
+.contact-link:hover .icon { background: var(--yellow); color: var(--dark); }
+/* الفوتر */
 footer {
   border-top: 1px solid rgba(255,255,255,0.05);
-  padding: 40px 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: var(--gray);
-  font-size: 12px;
-  flex-wrap: wrap;
-  gap: 12px;
+  padding: 36px 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  max-width: 1260px; margin: 0 auto;
+  color: var(--gray); font-size: 12px; flex-wrap: wrap; gap: 10px;
 }
 footer strong { color: var(--yellow); }
-.reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
-.reveal.visible { opacity: 1; transform: translateY(0); }
 
-/* SHOWCASE MODAL (VERTICAL) */
+/* =====================================================
+   تأثير Reveal عند السكرول
+   العناصر اللي عندها كلاس reveal تبدأ مخفية
+   وتظهر بأنيميشن لما تدخل في الشاشة
+   ===================================================== */
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity var(--transition-slow) var(--ease-bounce), transform var(--transition-slow) var(--ease-bounce); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+/* =====================================================
+   موديول عرض المشروع (Project Showcase Modal)
+   يظهر لما تضغط على مشروع
+   ===================================================== */
 .showcase-overlay {
   position: fixed; inset: 0; z-index: 20000;
-  background: #0a0a0a; opacity: 0; visibility: hidden;
-  transition: opacity 0.5s ease, visibility 0s linear 0.5s;
+  background: rgba(8,8,8,0.96);
+  backdrop-filter: blur(20px);
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.45s ease, visibility 0s linear 0.45s;
 }
-.showcase-overlay.open { opacity: 1; visibility: visible; transition: opacity 0.5s ease, visibility 0s; }
-.showcase-container { width: 100%; height: 100%; overflow-y: auto; scroll-behavior: smooth; position: relative; }
+.showcase-overlay.open {
+  opacity: 1; visibility: visible;
+  transition: opacity 0.45s ease, visibility 0s;
+}
+/* الكونتينر القابل للسكرول */
+.showcase-container { width: 100%; height: 100%; overflow-y: auto; scroll-behavior: smooth; padding-top: 70px; }
+/* الهيدر الثابت */
 .showcase-header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; justify-content: space-between; align-items: center;
-  padding: 20px 32px; background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
-  backdrop-filter: blur(12px); pointer-events: none;
+  padding: 20px 32px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+  backdrop-filter: blur(8px);
 }
-.showcase-header-left { pointer-events: auto; }
-.showcase-project-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--white); }
-.showcase-project-cat { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--yellow); text-transform: uppercase; letter-spacing: 2px; }
+.showcase-project-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; }
+.showcase-project-cat { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--yellow); text-transform: uppercase; letter-spacing: 2px; }
+/* زر الإغلاق */
 .showcase-close {
-  width: 44px; height: 44px; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
-  border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; font-size: 22px; color: var(--white); transition: all 0.3s;
-  pointer-events: auto; border: 1px solid rgba(255,255,255,0.1);
+  width: 42px; height: 42px; background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 18px; color: var(--white);
+  transition: all 0.3s; backdrop-filter: blur(8px);
 }
+.showcase-close:hover { background: var(--yellow); color: var(--dark); border-color: var(--yellow); transform: rotate(90deg); }
+/* كل سلايد = صورة كاملة تملأ الشاشة */
 .showcase-section {
-  min-height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center;
-  position: relative; border-bottom: 1px solid rgba(255,255,255,0.05);
+  width: 100%;
+  position: relative;
+  background: var(--dark);
 }
-.showcase-content {
-  position: relative; z-index: 2; max-width: 800px; text-align: center;
-  padding: 32px; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
-  border-radius: 32px; margin: 20px;
+
+/* الصورة الرئيسية للسلايد — تملأ العرض كاملاً بنسبة ثابتة */
+.showcase-slide-img {
+  display: block;
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+  object-position: center;
 }
-.showcase-content h3 { font-family: 'Syne', sans-serif; font-size: clamp(24px, 5vw, 48px); font-weight: 800; margin-bottom: 16px; color: var(--yellow); }
+
+/* لو ما في صورة — نعرض placeholder بلون gradient */
+.showcase-slide-placeholder {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(20px, 4vw, 42px);
+  font-weight: 800;
+  color: rgba(255,255,255,0.15);
+  letter-spacing: -2px;
+}
+
+/* شريط المعلومات الصغير أسفل كل صورة */
+.showcase-slide-caption {
+  width: 100%;
+  padding: 18px 32px;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(248,194,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.showcase-slide-caption h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px; font-weight: 700;
+  color: var(--yellow);
+  margin: 0;
+}
+.showcase-slide-caption p {
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.5;
+  margin: 0;
+  max-width: 500px;
+}
+.showcase-slide-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--purple-light);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* فاصل خفيف بين السلايدات */
+.showcase-section + .showcase-section {
+  border-top: 2px solid rgba(248,194,0,0.06);
+}
+/* أزرار التنقل بين السلايدات */
 .showcase-nav {
-  position: fixed; bottom: 28px; right: 28px; display: flex; gap: 12px; z-index: 100;
-  pointer-events: none;
+  position: fixed; bottom: 28px; right: 28px;
+  display: flex; gap: 10px; z-index: 100;
 }
 .showcase-nav-btn {
-  width: 48px; height: 48px; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+  width: 46px; height: 46px;
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
   border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; font-size: 20px; color: var(--white); transition: all 0.3s;
-  pointer-events: auto; border: 1px solid rgba(255,255,255,0.1);
+  cursor: pointer; font-size: 18px; color: var(--white);
+  transition: all 0.3s; border: 1px solid rgba(255,255,255,0.1);
 }
+.showcase-nav-btn:hover { background: var(--yellow); color: var(--dark); border-color: var(--yellow); }
+/* عداد الصفحات */
 .showcase-progress {
   position: fixed; bottom: 28px; left: 28px; z-index: 100;
-  font-family: 'Space Mono', monospace; font-size: 12px;
-  background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+  font-family: 'Space Mono', monospace; font-size: 11px;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
   padding: 6px 14px; border-radius: 40px; color: var(--gray);
-  pointer-events: none;
+  border: 1px solid rgba(255,255,255,0.06);
 }
-@keyframes blobFloat { 0% { transform: scale(1); } 100% { transform: scale(1.2) translate(30px, -20px); } }
+
+/* =====================================================
+   الكي فريمز (الأنيميشنات) - كل الحركات تتعرف هنا
+   ===================================================== */
+@keyframes textShine { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+@keyframes dotBounce { 0%, 80%, 100% { transform: scale(0.5); opacity: 0.3; } 40% { transform: scale(1.2); opacity: 1; } }
+@keyframes pulseOpacity { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.4); } }
+@keyframes blobFloat { 0% { transform: scale(1) translate(0,0); } 100% { transform: scale(1.25) translate(40px, -30px); } }
 @keyframes gridShift { 0% { background-position: 0 0; } 100% { background-position: 80px 80px; } }
-@keyframes floatShape { 0% { transform: translateY(0); } 100% { transform: translateY(-20px); } }
-@keyframes characterFloat { 0% { transform: translateY(0); } 100% { transform: translateY(-15px); } }
-@keyframes badgeFloat { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
-/* Responsive Media Queries */
+@keyframes floatShape { 0% { transform: translateY(0) rotate(0deg); } 100% { transform: translateY(-20px) rotate(12deg); } }
+@keyframes characterFloat { 0% { transform: translateY(0); } 100% { transform: translateY(-18px); } }
+@keyframes badgeFloat { 0% { transform: translateY(0); } 100% { transform: translateY(-12px); } }
+@keyframes glowPulse { 0%, 100% { opacity: 0.4; transform: scaleX(1); } 50% { opacity: 0.7; transform: scaleX(1.2); } }
+@keyframes cardFloat { 0% { transform: translateY(0) rotate(-1deg); } 100% { transform: translateY(-12px) rotate(1deg); } }
+@keyframes marqueeScroll { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
+@keyframes glitch-skew { 0% { transform: skew(0deg); } 10% { transform: skew(0.8deg); } 20% { transform: skew(-0.4deg); } 30% { transform: skew(0deg); } 100% { transform: skew(0deg); } }
+@keyframes glitch-1 { 0% { transform: translate(0); } 20% { transform: translate(-3px, 1px); } 40% { transform: translate(-1px, -1px); } 60% { transform: translate(3px, 1px); } 80% { transform: translate(-1px, -2px); } 100% { transform: translate(0); } }
+@keyframes glitch-2 { 0% { transform: translate(0); } 20% { transform: translate(3px, -1px); } 40% { transform: translate(1px, 1px); } 60% { transform: translate(-3px, 0); } 80% { transform: translate(1px, 2px); } 100% { transform: translate(0); } }
+
+/* =====================================================
+   ريسبونسف - الشاشات الصغيرة (Tablet: 1024px)
+   ===================================================== */
 @media (max-width: 1024px) {
   .behance-grid { columns: 2; }
-  .about-inner { gap: 48px; }
+  .about-inner { grid-template-columns: 1fr; gap: 60px; text-align: center; }
+  .about-inner .section-tag { justify-content: center; }
+  .about-inner .skills-row { justify-content: center; }
+  .avatar-container { max-width: 320px; }
 }
+/* =====================================================
+   ريسبونسف - الموبايل (768px)
+   ===================================================== */
 @media (max-width: 768px) {
-  nav { padding: 16px 20px; }
-  .nav-links { gap: 16px; justify-content: center; margin-top: 8px; width: 100%; }
-  .nav-links a { font-size: 10px; white-space: nowrap; }
-  .nav-logo { font-size: 20px; }
+  /* الناف يتغير على الموبايل */
+  nav { padding: 14px 20px; flex-wrap: nowrap; }
+  nav.scrolled { padding: 10px 20px; }
+  .nav-toggle { display: flex; } /* إظهار زر الهامبرغر */
+  .nav-links {
+    position: fixed; top: 0; right: -100%; bottom: 0;
+    width: 75%; max-width: 320px;
+    background: rgba(15,15,15,0.98);
+    backdrop-filter: blur(20px);
+    flex-direction: column; justify-content: center;
+    gap: 28px; padding: 80px 40px;
+    transition: right 0.4s var(--ease-bounce);
+    border-left: 1px solid rgba(248,194,0,0.1);
+    z-index: 1;
+  }
+  .nav-links.open { right: 0; }
+  .nav-links a { font-size: 14px; letter-spacing: 2px; }
+  /* الهيرو */
   .hero-title { letter-spacing: -2px; }
   .stats-bar .stat { flex-basis: 50%; border-bottom: 1px solid rgba(255,255,255,0.06); }
-  .about-inner { grid-template-columns: 1fr; text-align: center; }
-  .section-tag { justify-content: center; }
-  .skills-row { justify-content: center; }
-  .floating-badge { transform: scale(0.8); }
-  .fb1, .fb2, .fb3 { display: none; } /* avoid overlap on small screens */
-  .avatar-container { max-width: 280px; }
-  .showcase-header { padding: 16px 20px; }
-  .showcase-project-title { font-size: 16px; }
-  .showcase-close { width: 40px; height: 40px; font-size: 18px; }
-  .showcase-nav-btn { width: 40px; height: 40px; font-size: 16px; }
-  .showcase-progress { bottom: 18px; left: 18px; font-size: 10px; }
+  /* البادجات تختفي على الموبايل */
+  .fb1, .fb2, .fb3 { display: none; }
+  /* الماركي */
+  .marquee-text { font-size: 13px; }
+  /* الموديول */
+  .showcase-header { padding: 14px 18px; }
+  .showcase-project-title { font-size: 15px; }
+  .showcase-close { width: 38px; height: 38px; font-size: 16px; }
+  .showcase-nav-btn { width: 40px; height: 40px; }
+  .showcase-nav { bottom: 16px; right: 16px; }
+  .showcase-progress { bottom: 16px; left: 16px; }
+  .showcase-slide-img { height: 60vw; min-height: 240px; }
+  .showcase-slide-placeholder { height: 60vw; min-height: 240px; }
+  .showcase-slide-caption { padding: 14px 18px; gap: 10px; }
+  .showcase-slide-caption h3 { font-size: 13px; }
+  .showcase-slide-caption p { font-size: 11px; }
+  /* فوتر */
+  footer { justify-content: center; text-align: center; }
+  footer span:nth-child(2) { display: none; } /* إخفاء العنصر الوسطي */
 }
-@media (max-width: 600px) {
-  .behance-grid { columns: 1; }
-  .hero-btns .btn-primary, .hero-btns .btn-secondary { padding: 12px 28px; font-size: 14px; }
-  .stat-num { font-size: 28px; }
-  .portfolio-section { padding: 60px 16px; }
-  .card-info { padding: 16px; }
-}
+/* =====================================================
+   ريسبونسف - موبايل صغير (480px)
+   ===================================================== */
 @media (max-width: 480px) {
-  .hero-title { font-size: 42px; }
-  .hero-badge { font-size: 9px; margin-bottom: 20px; }
-  .nav-links { gap: 12px; }
+  .behance-grid { columns: 1; }
+  .hero-title { letter-spacing: -1.5px; }
+  .hero-badge { font-size: 9px; letter-spacing: 1.5px; }
+  .stat-num { font-size: 28px; }
+  .portfolio-section { padding: 70px 16px; }
+  .card-info { padding: 16px 18px; }
+  .contact-heading { letter-spacing: -3px; }
+  #about { padding: 80px 16px; }
+  .section-title { letter-spacing: -2px; }
+  /* أزرار الهيرو */
+  .btn-primary, .btn-secondary { padding: 12px 28px; font-size: 14px; }
+}
+/* =====================================================
+   للموبايل نستبدل cursor: none بالكيرسر العادي
+   ===================================================== */
+@media (pointer: coarse) {
+  body { cursor: auto; }
+  .project-card { cursor: pointer; }
+  .overlay-btn { cursor: pointer; }
+  .showcase-close, .showcase-nav-btn { cursor: pointer; }
 }
 </style>
 </head>
 <body>
 
+<!-- =====================================================
+     شاشة اللودينج - تظهر عند بداية تحميل الصفحة
+     ===================================================== -->
 <div class="loading-screen" id="loadingScreen">
-  <div class="loading-content">
-    <div class="loading-logo">DOUDOU</div>
-    <div class="loading-sub">GRAPHIC DESIGNER</div>
-    <div class="loading-dots"><span></span><span></span><span></span></div>
+  <div class="loading-logo-wrap">
+    <img src="logo.png" alt="DOUDOU" class="loading-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <div class="loading-logo" style="display:none;">DOUDOU</div>
   </div>
+  <div class="loading-sub">GRAPHIC DESIGNER</div>
+  <div class="loading-dots"><span></span><span></span><span></span></div>
 </div>
 
+<!-- الكيرسر المخصص (يظهر فقط على أجهزة الماوس) -->
 <div class="cursor" id="cursor"></div>
 <div class="cursor-follower" id="cursor-follower"></div>
 
+<!-- =====================================================
+     شريط التنقل
+     ===================================================== -->
 <nav id="navbar">
-  <a href="#home" class="nav-logo">D<span>•</span>DOUDOU</a>
-  <ul class="nav-links">
-    <li><a href="#home">Home</a></li><li><a href="#about">About</a></li><li><a href="#social-media">Social Media</a></li>
-    <li><a href="#print">Print</a></li><li><a href="#logos">Logos</a></li><li><a href="#uiux">UI/UX</a></li>
-    <li><a href="#contact" class="nav-cta">Contact</a></li>
+  <a href="#home" class="nav-logo">
+    <img src="logo.png" alt="DOUDOU Logo" class="nav-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <span class="nav-logo-fallback" style="display:none;">D<span>•</span>DOUDOU</span>
+  </a>
+  <button class="nav-toggle" id="navToggle" aria-label="فتح القائمة">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#home" onclick="closeMenu()">Home</a></li>
+    <li><a href="#about" onclick="closeMenu()">About</a></li>
+    <li><a href="#social-media" onclick="closeMenu()">Social Media</a></li>
+    <li><a href="#print" onclick="closeMenu()">Print</a></li>
+    <li><a href="#logos" onclick="closeMenu()">Logos</a></li>
+    <li><a href="#uiux" onclick="closeMenu()">UI/UX</a></li>
+    <li><a href="#contact" class="nav-cta" onclick="closeMenu()">Contact</a></li>
   </ul>
 </nav>
 
+<!-- =====================================================
+     قسم الهيرو الرئيسي
+     ===================================================== -->
 <section id="home">
-  <div class="hero-bg"><div class="hero-blob"></div><div class="hero-blob"></div><div class="hero-blob"></div><div class="hero-grid"></div></div>
-  <div class="floating-shapes"><div class="shape shape-ring" style="top:15%;left:10%"></div><div class="shape shape-dot" style="top:25%;left:20%"></div><div class="shape shape-ring" style="top:70%;right:12%"></div><div class="shape shape-dot" style="bottom:30%;right:20%"></div><div class="shape shape-line" style="top:40%;left:5%"></div><div class="shape shape-square" style="bottom:40%;left:15%"></div></div>
+  <div class="hero-bg">
+    <div class="hero-blob"></div>
+    <div class="hero-blob"></div>
+    <div class="hero-blob"></div>
+    <div class="hero-grid"></div>
+  </div>
+  <div class="floating-shapes">
+    <div class="shape shape-ring" style="top:12%;left:8%"></div>
+    <div class="shape shape-dot" style="top:22%;left:18%"></div>
+    <div class="shape shape-ring" style="top:65%;right:10%"></div>
+    <div class="shape shape-dot" style="bottom:28%;right:18%"></div>
+    <div class="shape shape-line" style="top:38%;left:4%"></div>
+    <div class="shape shape-square" style="bottom:35%;left:12%"></div>
+  </div>
   <div class="hero-content">
     <div class="hero-badge">✦ Available for Projects</div>
-    <h1 class="hero-title"><span class="line1">Graphic</span><span class="line2 glitch-text" data-text="Designer">Designer</span><span class="line3">Portfolio</span></h1>
+    <h1 class="hero-title">
+      <span class="line1">Graphic</span>
+      <span class="line2 glitch-text" data-text="Designer">Designer</span>
+      <span class="line3">Portfolio</span>
+    </h1>
     <p class="hero-sub">Turning ideas into visuals that feel alive — social media, print, logos, and UI/UX with a clean, modern edge.</p>
-    <div class="hero-btns"><a href="#social-media" class="btn-primary"><span>View Work</span></a><a href="#contact" class="btn-secondary">Let's Talk</a></div>
-    <div class="stats-bar"><div class="stat"><span class="stat-num">50+</span><div class="stat-label">Projects Done</div></div><div class="stat"><span class="stat-num">30+</span><div class="stat-label">Happy Clients</div></div><div class="stat"><span class="stat-num">3+</span><div class="stat-label">Years Experience</div></div><div class="stat"><span class="stat-num">4</span><div class="stat-label">Design Fields</div></div></div>
+    <div class="hero-btns">
+      <a href="#social-media" class="btn-primary"><span>View Work ✦</span></a>
+      <a href="#contact" class="btn-secondary">Let's Talk</a>
+    </div>
+    <div class="stats-bar">
+      <div class="stat"><span class="stat-num">50+</span><div class="stat-label">Projects Done</div></div>
+      <div class="stat"><span class="stat-num">30+</span><div class="stat-label">Happy Clients</div></div>
+      <div class="stat"><span class="stat-num">3+</span><div class="stat-label">Years Exp</div></div>
+      <div class="stat"><span class="stat-num">4</span><div class="stat-label">Design Fields</div></div>
+    </div>
   </div>
 </section>
 
-<div class="marquee-section"><div class="marquee-content">✦ CREATIVE DIRECTION ✦ BRAND IDENTITY ✦ SOCIAL MEDIA DESIGN ✦ PRINT & PACKAGING ✦ LOGO DESIGN ✦ UI/UX INTERFACES <span>✦</span> <i>DOUDOU STUDIO</i> <span>✦</span> ✦ CREATIVE DIRECTION ✦ BRAND IDENTITY ✦ SOCIAL MEDIA DESIGN ✦ PRINT & PACKAGING ✦ LOGO DESIGN ✦ UI/UX INTERFACES <span>✦</span> <i>DOUDOU STUDIO</i> <span>✦</span></div></div>
+<!-- الشريط المتحرك الأول -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <span class="marquee-text">✦ Creative Direction <span class="sep">✦</span> Brand Identity <span class="sep">✦</span> Social Media <span class="sep">✦</span> Print & Packaging <span class="sep">✦</span> Logo Design <span class="sep">✦</span> UI/UX Interfaces <span class="sep">✦</span> DOUDOU STUDIO <span class="sep">✦</span> Creative Direction <span class="sep">✦</span> Brand Identity <span class="sep">✦</span> Social Media <span class="sep">✦</span> Print & Packaging <span class="sep">✦</span> Logo Design <span class="sep">✦</span> UI/UX Interfaces <span class="sep">✦</span> DOUDOU STUDIO <span class="sep">✦</span></span>
+  </div>
+</div>
 
-<section id="about"><div class="about-inner"><div class="about-visual reveal"><div class="avatar-container"><div class="avatar-card"><div class="avatar-figure"><svg class="char-svg" viewBox="0 0 280 320" fill="none"><ellipse cx="140" cy="310" rx="70" ry="12" fill="rgba(123,47,190,0.3)"/><rect x="80" y="180" width="120" height="110" rx="20" fill="#7B2FBE"/><rect x="80" y="180" width="55" height="110" rx="20" fill="#6a28a3"/><polygon points="125,180 155,180 140,215" fill="white" opacity="0.9"/><rect x="40" y="185" width="42" height="24" rx="12" fill="#7B2FBE"/><rect x="198" y="185" width="42" height="24" rx="12" fill="#7B2FBE"/><circle cx="38" cy="197" r="14" fill="#F8C200"/><circle cx="242" cy="197" r="14" fill="#F8C200"/><rect x="252" y="185" width="5" height="30" rx="2.5" fill="white" transform="rotate(15,254,200)"/><polygon points="265,212 258,208 263,218" fill="var(--yellow)" transform="rotate(15,262,213)"/><rect x="120" y="155" width="40" height="30" rx="8" fill="#F8C200"/><ellipse cx="140" cy="130" rx="52" ry="56" fill="#F8C200"/><ellipse cx="140" cy="82" rx="52" ry="20" fill="#1a1a1a"/><rect x="88" y="82" width="104" height="22" fill="#1a1a1a"/><path d="M108 75 Q140 55 172 75" stroke="#333" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M95 88 Q115 68 140 65 Q165 68 185 88" fill="#1a1a1a"/><rect x="103" y="118" width="28" height="20" rx="8" fill="none" stroke="#1a1a1a" stroke-width="2.5"/><rect x="149" y="118" width="28" height="20" rx="8" fill="none" stroke="#1a1a1a" stroke-width="2.5"/><line x1="131" y1="128" x2="149" y2="128" stroke="#1a1a1a" stroke-width="2"/><circle cx="117" cy="128" r="5" fill="#1a1a1a"/><circle cx="163" cy="128" r="5" fill="#1a1a1a"/><circle cx="119" cy="126" r="2" fill="white"/><circle cx="165" cy="126" r="2" fill="white"/><path d="M125 148 Q140 162 155 148" stroke="#1a1a1a" stroke-width="2.5" fill="none" stroke-linecap="round"/><ellipse cx="88" cy="132" rx="8" ry="10" fill="#F8C200"/><ellipse cx="192" cy="132" rx="8" ry="10" fill="#F8C200"/><rect x="90" y="285" width="35" height="20" rx="10" fill="#1a1a1a"/><rect x="155" y="285" width="35" height="20" rx="10" fill="#1a1a1a"/><ellipse cx="107" cy="305" rx="18" ry="8" fill="#7B2FBE"/><ellipse cx="173" cy="305" rx="18" ry="8" fill="#7B2FBE"/><path d="M230 60 L234 68 L242 72 L234 76 L230 84 L226 76 L218 72 L226 68 Z" fill="#F8C200" opacity="0.8"/><path d="M45 100 L47 104 L51 106 L47 108 L45 112 L43 108 L39 106 L43 104 Z" fill="#9B4FDE" opacity="0.7"/></svg></div><div class="avatar-glow"></div></div><div class="avatar-tag">✦ Doudou — Graphic Designer</div><div class="floating-badge fb1"><div class="badge-icon">🎨</div><div><div class="badge-text">UI/UX Design</div><div class="badge-sub">Figma & Adobe XD</div></div></div><div class="floating-badge fb2"><div class="badge-icon">✦</div><div><div class="badge-text">Brand Identity</div><div class="badge-sub">50+ Projects</div></div></div><div class="floating-badge fb3"><div class="badge-icon">⚡</div><div><div class="badge-text">Fast Delivery</div><div class="badge-sub">Always on time</div></div></div></div></div><div class="about-text reveal reveal-delay-2"><div class="section-tag">Who I Am</div><h2 class="about-heading">Hi, I'm <span class="hl">Doudou</span><br><span class="hl2">Creative</span> Designer.</h2><p class="about-desc">A graphic designer who loves turning ideas into visuals that actually <strong>feel alive</strong>. I design social media posts, print materials, logos, and UI/UX interfaces with a clean and modern style, always trying to make every project look unique instead of "just another design".</p><p class="about-desc">I enjoy mixing <strong>creativity with simplicity</strong>, whether it's building a brand identity, designing an Instagram post, or creating an interface that feels smooth and easy to use.</p><div class="skills-row"><span class="skill-chip yellow">Social Media</span><span class="skill-chip">Print Design</span><span class="skill-chip yellow">Logo Design</span><span class="skill-chip">UI/UX</span><span class="skill-chip yellow">Brand Identity</span><span class="skill-chip">Adobe Photoshop</span><span class="skill-chip yellow">Illustrator</span><span class="skill-chip">Figma</span></div></div></div></section>
+<!-- =====================================================
+     قسم About
+     ===================================================== -->
+<section id="about">
+  <div class="about-inner">
+    <div class="about-visual reveal">
+      <div class="avatar-container">
+        <div class="avatar-card">
+          <!-- الأفاتار — ضع صورتك هنا (avatar.png أو jpg) -->
+          <img src="avatar.png" alt="Doudou — Graphic Designer" class="avatar-img"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+          <!-- SVG احتياطي لو الصورة مش موجودة -->
+          <svg class="char-svg" viewBox="0 0 280 320" fill="none" style="display:none;">
+            <ellipse cx="140" cy="310" rx="70" ry="12" fill="rgba(123,47,190,0.3)"/>
+            <rect x="80" y="180" width="120" height="110" rx="20" fill="#7B2FBE"/>
+            <rect x="80" y="180" width="55" height="110" rx="20" fill="#6a28a3"/>
+            <polygon points="125,180 155,180 140,215" fill="white" opacity="0.9"/>
+            <rect x="40" y="185" width="42" height="24" rx="12" fill="#7B2FBE"/>
+            <rect x="198" y="185" width="42" height="24" rx="12" fill="#7B2FBE"/>
+            <circle cx="38" cy="197" r="14" fill="#F8C200"/>
+            <circle cx="242" cy="197" r="14" fill="#F8C200"/>
+            <rect x="120" y="155" width="40" height="30" rx="8" fill="#F8C200"/>
+            <ellipse cx="140" cy="130" rx="52" ry="56" fill="#F8C200"/>
+            <ellipse cx="140" cy="82" rx="52" ry="20" fill="#1a1a1a"/>
+            <rect x="88" y="82" width="104" height="22" fill="#1a1a1a"/>
+            <path d="M108 75 Q140 55 172 75" stroke="#333" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <path d="M95 88 Q115 68 140 65 Q165 68 185 88" fill="#1a1a1a"/>
+            <rect x="103" y="118" width="28" height="20" rx="8" fill="none" stroke="#1a1a1a" stroke-width="2.5"/>
+            <rect x="149" y="118" width="28" height="20" rx="8" fill="none" stroke="#1a1a1a" stroke-width="2.5"/>
+            <line x1="131" y1="128" x2="149" y2="128" stroke="#1a1a1a" stroke-width="2"/>
+            <circle cx="117" cy="128" r="5" fill="#1a1a1a"/>
+            <circle cx="163" cy="128" r="5" fill="#1a1a1a"/>
+            <circle cx="119" cy="126" r="2" fill="white"/>
+            <circle cx="165" cy="126" r="2" fill="white"/>
+            <path d="M125 148 Q140 162 155 148" stroke="#1a1a1a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <ellipse cx="88" cy="132" rx="8" ry="10" fill="#F8C200"/>
+            <ellipse cx="192" cy="132" rx="8" ry="10" fill="#F8C200"/>
+            <rect x="90" y="285" width="35" height="20" rx="10" fill="#1a1a1a"/>
+            <rect x="155" y="285" width="35" height="20" rx="10" fill="#1a1a1a"/>
+            <ellipse cx="107" cy="305" rx="18" ry="8" fill="#7B2FBE"/>
+            <ellipse cx="173" cy="305" rx="18" ry="8" fill="#7B2FBE"/>
+            <path d="M230 60 L234 68 L242 72 L234 76 L230 84 L226 76 L218 72 L226 68 Z" fill="#F8C200" opacity="0.8"/>
+            <path d="M45 100 L47 104 L51 106 L47 108 L45 112 L43 108 L39 106 L43 104 Z" fill="#9B4FDE" opacity="0.7"/>
+          </svg>
+          <div class="avatar-glow"></div>
+        </div>
+        <div class="avatar-tag">✦ Doudou — Graphic Designer</div>
+        <div class="floating-badge fb1"><div class="badge-icon"></div><div class="badge-icon">
+  <object type="image/svg+xml" data="icons/design.svg" width="22" height="22"></object>
+</div><div><div class="badge-text">UI/UX Design</div><div class="badge-sub">Figma</div></div></div>
+        <div class="floating-badge fb2"><div class="badge-icon">
+  <object type="image/svg+xml" data="icons/Brand Identity.svg" width="22" height="22"></object>
+</div><div><div class="badge-text">Brand Identity</div><div class="badge-sub">50+ Projects</div></div></div>
+        <div class="floating-badge fb3"><div class="badge-icon">
+  <object type="image/svg+xml" data="icons/Fast Delivery.svg" width="22" height="22"></object>
+</div><div><div class="badge-text">Fast Delivery</div><div class="badge-sub">Always on time</div></div></div>
+      </div>
+    </div>
+    <div class="about-text reveal reveal-delay-2">
+      <div class="section-tag">Who I Am</div>
+      <h2 class="about-heading">Hi, I'm <span class="hl">Doudou</span><br><span class="hl2">Creative</span> Designer.</h2>
+      <p class="about-desc">A graphic designer who loves turning ideas into visuals that actually <strong>feel alive</strong>. I design social media posts, print materials, logos, and UI/UX interfaces with a clean and modern style.</p>
+      <p class="about-desc">I enjoy mixing <strong>creativity with simplicity</strong> — whether building a brand identity, designing an Instagram post, or creating an interface that feels smooth to use.</p>
+      <div class="skills-row">
+        <span class="skill-chip yellow">Social Media</span>
+        <span class="skill-chip">Print Design</span>
+        <span class="skill-chip yellow">Logo Design</span>
+        <span class="skill-chip">UI/UX</span>
+        <span class="skill-chip yellow">Brand Identity</span>
+        <span class="skill-chip">Adobe Photoshop</span>
+        <span class="skill-chip yellow">Illustrator</span>
+        <span class="skill-chip">Figma</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-<div class="marquee-section"><div class="marquee-content">✦ GRAPHIC DESIGN ✦ MOTION ✦ BRANDING ✦ UI/UX ✦ PRINT ✦ CREATIVE SOLUTIONS <span>⚡</span> <i>DOUDOU PORTFOLIO</i> <span>⚡</span> ✦ GRAPHIC DESIGN ✦ MOTION ✦ BRANDING ✦ UI/UX ✦ PRINT ✦ CREATIVE SOLUTIONS <span>⚡</span> <i>DOUDOU PORTFOLIO</i> <span>⚡</span></div></div>
+<!-- الشريط المتحرك الثاني -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <span class="marquee-text">✦ Graphic Design <span class="sep">✦</span> Motion <span class="sep">✦</span> Branding <span class="sep">✦</span> UI/UX <span class="sep">✦</span> Print <span class="sep">✦</span> Creative Solutions <span class="sep">✦</span> DOUDOU Portfolio <span class="sep">✦</span> Graphic Design <span class="sep">✦</span> Motion <span class="sep">✦</span> Branding <span class="sep">✦</span> UI/UX <span class="sep">✦</span> Print <span class="sep">✦</span> Creative Solutions <span class="sep">✦</span> DOUDOU Portfolio <span class="sep">✦</span></span>
+  </div>
+</div>
 
-<section id="social-media" class="portfolio-section"><div class="section-header reveal"><span class="section-number">01 — Portfolio</span><h2 class="section-title">Social <span class="accent">Media</span><br><span class="outline">Designs</span></h2></div><div class="behance-grid"><div class="project-card reveal" data-project="sm1"><div class="card-visual sm-mock"><div class="mock-design"><div class="post-preview">NEW</div></div><div class="card-overlay"><button class="overlay-btn">View</button></div></div><div class="card-info"><div class="card-cat">Instagram Post</div><div class="card-title">Product Launch Campaign</div><div class="card-desc">Bold typography meets gradient gradients for maximum engagement.</div></div></div><div class="project-card reveal reveal-delay-1" data-project="sm2"><div class="card-visual sm-mock" style="background:linear-gradient(135deg,#0a1a0d,#0d0a1a)"><div class="mock-design"><div class="post-preview" style="width:120px;height:120px;background:linear-gradient(135deg,#00f5a0,#7B2FBE);border-radius:12px;"></div></div><div class="card-overlay"><button class="overlay-btn">View</button></div></div><div class="card-info"><div class="card-cat">Story Design</div><div class="card-title">Brand Awareness Series</div><div class="card-desc">Minimal yet powerful story templates for consistent branding.</div></div></div><div class="project-card reveal reveal-delay-2" data-project="sm3"><div class="card-visual sm-mock" style="background:linear-gradient(135deg,#1a0d0a,#0a0d1a)"><div class="mock-design"><div class="post-preview" style="background:linear-gradient(135deg,var(--yellow),#ff6b35);font-size:22px;">50%<br>OFF</div></div><div class="card-overlay"><button class="overlay-btn">View</button></div></div><div class="card-info"><div class="card-cat">Promotional Post</div><div class="card-title">Sale Event Visual</div><div class="card-desc">Eye-catching promotional graphics that drive action.</div></div></div></div></section>
+<!-- =====================================================
+     أقسام البورتفوليو
+     ===================================================== -->
 
-<section id="print" class="portfolio-section"><div class="section-header reveal"><span class="section-number">02 — Portfolio</span><h2 class="section-title">Print <span class="accent">Materials</span><br><span class="outline">Portfolio</span></h2></div><div class="behance-grid"><div class="project-card reveal" data-project="p1"><div class="card-visual print-mock"><div class="brochure"><div style="height:60px;background:linear-gradient(135deg,var(--yellow),var(--purple));"></div><div style="padding:12px;"><div style="height:6px;background:#e0e0e0;margin-bottom:6px;"></div><div style="height:6px;background:var(--yellow);width:40%;"></div></div></div><div class="card-overlay"><button class="overlay-btn">View</button></div></div><div class="card-info"><div class="card-cat">Brochure</div><div class="card-title">Corporate Tri-Fold</div><div class="card-desc">Professional brochure design for business presentations.</div></div></div></div></section>
+<!-- قسم السوشال ميديا -->
+<section id="social-media" class="portfolio-section">
+  <div class="section-header reveal">
+    <span class="section-number">01 — Portfolio</span>
+    <h2 class="section-title">Social <span class="accent">Media</span><br><span class="outline">Designs</span></h2>
+  </div>
+  <div class="behance-grid" id="grid-social-media">
+    <!-- البطاقات تُضاف تلقائياً من JavaScript عبر مصفوفة projectsData أدناه -->
+  </div>
+</section>
 
-<section id="logos" class="portfolio-section"><div class="section-header reveal"><span class="section-number">03 — Portfolio</span><h2 class="section-title">Logo <span class="accent">&</span><br><span class="outline">Brand Identity</span></h2></div><div class="behance-grid"><div class="project-card reveal" data-project="l1"><div class="card-visual logo-mock"><div class="logo-display">NOVA</div><div class="card-overlay"><button class="overlay-btn">View</button></div></div><div class="card-info"><div class="card-cat">Wordmark</div><div class="card-title">Nova Tech Brand</div><div class="card-desc">Clean wordmark with gradient treatment for a tech startup.</div></div></div></div></section>
+<!-- قسم البرينت -->
+<section id="print" class="portfolio-section">
+  <div class="section-header reveal">
+    <span class="section-number">02 — Portfolio</span>
+    <h2 class="section-title">Print <span class="accent">Materials</span><br><span class="outline">Portfolio</span></h2>
+  </div>
+  <div class="behance-grid" id="grid-print"></div>
+</section>
 
-<section id="uiux" class="portfolio-section"><div class="section-header reveal"><span class="section-number">04 — Portfolio</span><h2 class="section-title">UI<span class="accent">/</span>UX<br><span class="outline">Interfaces</span></h2></div><div class="behance-grid"><div class="project-card reveal" data-project="u1"><div class="card-visual ui-mock"><div class="app-frame"><div style="height:40px;background:rgba(248,194,0,0.1);display:flex;align-items:center;padding:0 14px;gap:6px;"><div style="width:6px;height:6px;background:var(--yellow);border-radius:50%;"></div><div style="width:6px;height:6px;background:var(--purple-light);"></div></div><div style="padding:14px;"><div style="height:8px;background:rgba(248,194,0,0.3);width:70%;border-radius:4px;margin-bottom:8px;"></div><div style="height:50px;background:rgba(123,47,190,0.2);border-radius:12px;margin-top:12px;"></div></div></div><div class="card-overlay"><button class="overlay-btn">View</button></div></div><div class="card-info"><div class="card-cat">Mobile App</div><div class="card-title">Finance Tracker App</div><div class="card-desc">Clean dashboard UI with dark theme and card-based layout.</div></div></div></div></section>
+<!-- قسم اللوجوهات -->
+<section id="logos" class="portfolio-section">
+  <div class="section-header reveal">
+    <span class="section-number">03 — Portfolio</span>
+    <h2 class="section-title">Logo <span class="accent">&</span><br><span class="outline">Brand Identity</span></h2>
+  </div>
+  <div class="behance-grid" id="grid-logos"></div>
+</section>
 
-<section id="contact"><div class="contact-inner"><div class="section-tag" style="justify-content:center;margin-bottom:24px;"><span style="width:40px;height:2px;background:var(--yellow);border-radius:2px;"></span> Let's Work Together</div><h2 class="contact-heading reveal"><span class="big">Got a</span><span class="big">Project?</span><span class="small" style="font-size:clamp(30px,4vw,60px);display:block;">Let's make it happen</span></h2><p class="contact-sub reveal reveal-delay-1">I'm always open to discussing new creative projects, brand identities, and design challenges. Let's build something great together.</p><div class="contact-links reveal reveal-delay-2"><a href="mailto:doudou@design.com" class="contact-link"><div class="icon">✉</div> doudou@design.com</a><a href="#" class="contact-link"><div class="icon">in</div> LinkedIn</a><a href="#" class="contact-link"><div class="icon">Be</div> Behance</a><a href="#" class="contact-link"><div class="icon">▷</div> Instagram</a></div><a href="mailto:doudou@design.com" class="btn-primary reveal reveal-delay-3" style="display:inline-flex;"><span>Start a Project ✦</span></a></div></section>
+<!-- قسم UI/UX -->
+<section id="uiux" class="portfolio-section">
+  <div class="section-header reveal">
+    <span class="section-number">04 — Portfolio</span>
+    <h2 class="section-title">UI<span class="accent">/</span>UX<br><span class="outline">Interfaces</span></h2>
+  </div>
+  <div class="behance-grid" id="grid-uiux"></div>
+</section>
 
-<div class="showcase-overlay" id="showcaseOverlay"><div class="showcase-container" id="showcaseContainer"><div class="showcase-header"><div class="showcase-header-left"><div class="showcase-project-title" id="showcaseProjectTitle"></div><div class="showcase-project-cat" id="showcaseProjectCat"></div></div><div class="showcase-close" id="showcaseClose">✕</div></div><div id="showcaseSections"></div><div class="showcase-nav"><div class="showcase-nav-btn" id="showcasePrev">↑</div><div class="showcase-nav-btn" id="showcaseNext">↓</div></div><div class="showcase-progress" id="showcaseProgress"><span id="currentIdx">1</span> / <span id="totalIdx">0</span></div></div></div>
+<!-- =====================================================
+     قسم التواصل
+     ===================================================== -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="section-tag" style="justify-content:center;margin-bottom:20px;">Let's Work Together</div>
+    <h2 class="contact-heading reveal">
+      <span class="big">Got a</span>
+      <span class="big">Project?</span>
+      <span class="small">Let's make it happen</span>
+    </h2>
+    <p class="contact-sub reveal reveal-delay-1">Always open to discussing new creative projects, brand identities, and design challenges. Let's build something great together.</p>
+    <div class="contact-links reveal reveal-delay-2">
+      <a href="mailto:doudou@design.com" class="contact-link"><div><img src="icons/email-icon.svg" alt="Email" style="width: 20px; height: 20px;"></div> doudou@design.com</a>
+      <a href="#" class="contact-link"><div class="icon">in</div> LinkedIn</a>
+      <a href="#" class="contact-link"><div class="icon">Be</div> Behance</a>
+      <a href="#" class="contact-link"><div class="icon">▷</div> Instagram</a>
+    </div>
+    <a href="mailto:doudou@design.com" class="btn-primary reveal reveal-delay-3" style="display:inline-flex;">
+      <span>Start a Project ✦</span>
+    </a>
+  </div>
+</section>
 
-<footer><span>© 2026 <strong>DOUDOU</strong> — Graphic Designer</span><span>Designed with <strong>✦</strong> and creativity</span><span>All rights reserved</span></footer>
+<footer>
+  <span>© 2026 <strong>DOUDOU</strong> — Graphic Designer</span>
+  <span>Designed with <strong>✦</strong> and creativity</span>
+  <span>All rights reserved</span>
+</footer>
+
+<!-- =====================================================
+     موديول عرض تفاصيل المشروع (Showcase)
+     ===================================================== -->
+<div class="showcase-overlay" id="showcaseOverlay">
+  <div class="showcase-container" id="showcaseContainer">
+    <div class="showcase-header">
+      <div class="showcase-header-left">
+        <div class="showcase-project-title" id="showcaseProjectTitle"></div>
+        <div class="showcase-project-cat" id="showcaseProjectCat"></div>
+      </div>
+      <div class="showcase-close" id="showcaseClose">✕</div>
+    </div>
+    <div id="showcaseSections"></div>
+    <div class="showcase-nav">
+      <div class="showcase-nav-btn" id="showcasePrev">↑</div>
+      <div class="showcase-nav-btn" id="showcaseNext">↓</div>
+    </div>
+    <div class="showcase-progress" id="showcaseProgress">
+      <span id="currentIdx">1</span> / <span id="totalIdx">0</span>
+    </div>
+  </div>
+</div>
 
 <script>
-// Cursor
+/* =====================================================
+   ═══════════════════════════════════════════════════
+   🎯 بيانات المشاريع - هنا تضيف وتعدل مشاريعك
+   ═══════════════════════════════════════════════════
+
+   كيف تضيف مشروع جديد؟
+   ════════════════════
+   1. انسخ أي كائن { } موجود داخل المصفوفة
+   2. الصقه بعد آخر مشروع في نفس الكاتيجوري
+   3. عدل البيانات التالية:
+
+   id         → معرف فريد للمشروع (بدون مسافات)
+   section    → "social-media" أو "print" أو "logos" أو "uiux"
+   cat        → التصنيف اللي يظهر على البطاقة (مثال: Instagram Post)
+   title      → اسم المشروع
+   desc       → وصف قصير يظهر على البطاقة
+   mockType   → نوع الخلفية: "sm-mock" أو "print-mock" أو "logo-mock" أو "ui-mock"
+   image      → مسار صورة الغلاف للبطاقة (مثال: 'projects/sm1-cover.jpg')
+                لو ما حطيت صورة، راح يظهر mockContent الاحتياطي
+   mockContent → الكود HTML الاحتياطي لو ما في صورة
+   slides     → مصفوفة الشرائح اللي تظهر في الموديول عند الضغط على المشروع
+                كل شريحة تحتاج: title, desc, img (مسار الصورة), grad (لون احتياطي)
+
+   ═══════════════════════════════════════════════════
+   🎨 كيف تعدل قائمة الموديول (الشرائح)؟
+   ═══════════════════════════════════════════════════
+   في كل مشروع فيه خاصية slides: []
+   كل شريحة هي كائن بهذا الشكل:
+   {
+     title: "عنوان الشريحة",
+     desc: "وصف يظهر في المنتصف",
+     grad: "linear-gradient(135deg, #000, #111)"  // لون الخلفية
+   }
+   بتقدر تزيد أو تحذف شرائح بسهولة
+   ═══════════════════════════════════════════════════ */
+
+const projectsData = [
+
+  /* ───────────────────────────────────────────────
+     📱 سوشال ميديا
+     ─────────────────────────────────────────────── */
+  {
+    id: 'sm1',
+    section: 'social-media',
+    cat: 'Instagram Post',
+    title: 'Product Launch Campaign',
+    desc: 'Bold typography meets gradient gradients for maximum engagement.',
+    mockType: 'sm-mock',
+    image: 'projects/sm1-cover.jpg', // 👈 ضع صورة الغلاف هنا
+    mockContent: `<div class="post-preview">NEW</div>`,
+    slides: [
+      { title: 'Hero Visual', desc: 'Bold typography meets neon gradients — designed to stop the scroll instantly.', img: 'projects/sm1-slide1.jpg', grad: 'linear-gradient(135deg,#1a0a2e,#2a0a4e)' },
+      { title: 'Carousel Slide', desc: 'Engaging product highlights with consistent color language across each frame.', img: 'projects/sm1-slide2.jpg', grad: 'linear-gradient(135deg,#0a0a2e,#4a2a8e)' },
+      { title: 'Story Highlight', desc: 'Motion-ready asset built for Instagram Stories, 1080×1920.', img: 'projects/sm1-slide3.jpg', grad: 'linear-gradient(135deg,#2a0a2e,#0a1a2e)' }
+    ]
+  },
+  {
+    id: 'sm2',
+    section: 'social-media',
+    cat: 'Story Design',
+    title: 'Brand Awareness Series',
+    desc: 'Minimal yet powerful story templates for consistent branding.',
+    mockType: 'sm-mock',
+    image: 'projects/sm2-cover.jpg', // 👈 ضع صورة الغلاف هنا
+    mockContent: `<div style="display:flex;gap:10px;align-items:center;">
+      <div style="width:80px;height:140px;border-radius:14px;background:linear-gradient(180deg,#00f5a0,#7B2FBE);animation:cardFloat 3s ease-in-out infinite alternate;"></div>
+      <div style="width:80px;height:140px;border-radius:14px;background:linear-gradient(180deg,#F8C200,#ff6b35);animation:cardFloat 4s ease-in-out infinite alternate;"></div>
+      <div style="width:80px;height:140px;border-radius:14px;background:linear-gradient(180deg,#7B2FBE,#0a0a1a);animation:cardFloat 3.5s ease-in-out infinite alternate;"></div>
+    </div>`,
+    slides: [
+      { title: 'Quote Layout', desc: 'Minimal and modern quote template with bold font hierarchy.', img: 'projects/sm2-slide1.jpg', grad: 'linear-gradient(180deg,#00f5a0,#7B2FBE)' },
+      { title: 'Product Teaser', desc: 'Vibrant gradient story to tease new product drops.', img: 'projects/sm2-slide2.jpg', grad: 'linear-gradient(180deg,#F8C200,#ff6b35)' },
+      { title: 'Countdown Sticker', desc: 'Engagement-focused sticker set for launch countdowns.', img: 'projects/sm2-slide3.jpg', grad: 'linear-gradient(180deg,#9B4FDE,#0a0a1a)' }
+    ]
+  },
+  {
+    id: 'sm3',
+    section: 'social-media',
+    cat: 'Promotional Post',
+    title: 'Sale Event Visual',
+    desc: 'Eye-catching promotional graphics that drive action and conversions.',
+    mockType: 'sm-mock',
+    image: 'projects/sm3-cover.jpg', // 👈 ضع صورة الغلاف هنا
+    mockContent: `<div class="post-preview" style="background:linear-gradient(135deg,var(--yellow),#ff6b35);font-size:20px;width:130px;height:130px;">50%<br>OFF</div>`,
+    slides: [
+      { title: 'Flash Sale Banner', desc: '50% OFF — high contrast design for maximum visual impact.', img: 'projects/sm3-slide1.jpg', grad: 'linear-gradient(135deg,#F8C200,#ff6b35)' },
+      { title: 'Instagram Feed Post', desc: 'Limited time offer, crafted for the feed with sharp typography.', img: 'projects/sm3-slide2.jpg', grad: 'linear-gradient(135deg,#7B2FBE,#F8C200)' },
+      { title: 'Facebook Ad', desc: '"Shop Now" CTA-focused ad layout for Facebook placements.', img: 'projects/sm3-slide3.jpg', grad: 'linear-gradient(135deg,#ff6b35,#7B2FBE)' }
+    ]
+  },
+
+  /* ───────────────────────────────────────────────
+     🖨️ برينت (Print)
+     ─────────────────────────────────────────────── */
+  {
+    id: 'p1',
+    section: 'print',
+    cat: 'Brochure',
+    title: 'Corporate Tri-Fold',
+    desc: 'Professional brochure design for business presentations and events.',
+    mockType: 'print-mock',
+    image: 'projects/p1-cover.jpg', // 👈 ضع صورة الغلاف هنا
+    mockContent: `<div class="brochure">
+      <div style="height:60px;background:linear-gradient(135deg,var(--yellow),var(--purple));"></div>
+      <div style="padding:10px;">
+        <div style="height:5px;background:#e0e0e0;margin-bottom:5px;border-radius:2px;"></div>
+        <div style="height:5px;background:var(--yellow);width:40%;border-radius:2px;"></div>
+      </div>
+    </div>`,
+    slides: [
+      { title: 'Brochure Cover', desc: 'Front panel with bold brand gradient and clean layout.', img: 'projects/p1-slide1.jpg', grad: 'linear-gradient(135deg,#0f0f1a,#1a0f0f)' },
+      { title: 'Inside Spread', desc: 'Content layout optimized for readability and visual flow.', img: 'projects/p1-slide2.jpg', grad: 'linear-gradient(135deg,#1a0f0f,#0f0f1a)' },
+      { title: 'Back Cover', desc: 'Contact info and brand tagline — clean closing statement.', img: 'projects/p1-slide3.jpg', grad: 'linear-gradient(135deg,#0a0a14,#140a14)' }
+    ]
+  },
+
+  /* ───────────────────────────────────────────────
+     🔤 لوجوهات (Logos)
+     ─────────────────────────────────────────────── */
+  {
+    id: 'l1',
+    section: 'logos',
+    cat: 'Wordmark',
+    title: 'Nova Tech Brand',
+    desc: 'Clean wordmark with gradient treatment for a modern tech startup.',
+    mockType: 'logo-mock',
+    image: 'projects/l1-cover.jpg', // 👈 ضع صورة الغلاف هنا
+    mockContent: `<div class="logo-display">NOVA</div>`,
+    slides: [
+      { title: 'Primary Logo', desc: 'Gradient wordmark — main brand expression on dark backgrounds.', img: 'projects/l1-slide1.jpg', grad: 'linear-gradient(135deg,#0a0a14,#140a14)' },
+      { title: 'Alternative Color', desc: 'Yellow version for high-contrast print and digital use.', img: 'projects/l1-slide2.jpg', grad: 'linear-gradient(135deg,#F8C200,#ff9a3c)' },
+      { title: 'Monochrome', desc: 'Purple solid for single-color applications.', img: 'projects/l1-slide3.jpg', grad: '#7B2FBE' }
+    ]
+  },
+
+  /* ───────────────────────────────────────────────
+     📱 UI/UX
+     ─────────────────────────────────────────────── */
+  {
+    id: 'u1',
+    section: 'uiux',
+    cat: 'Mobile App',
+    title: 'Finance Tracker App',
+    desc: 'Clean dashboard UI with dark theme and intuitive card-based layout.',
+    mockType: 'ui-mock',
+    image: 'projects/u1-cover.jpg', // 👈 ضع صورة الغلاف هنا
+    mockContent: `<div class="app-frame">
+      <div style="height:40px;background:rgba(248,194,0,0.1);display:flex;align-items:center;padding:0 12px;gap:5px;">
+        <div style="width:6px;height:6px;background:var(--yellow);border-radius:50%;"></div>
+        <div style="width:6px;height:6px;background:var(--purple-light);border-radius:50%;"></div>
+      </div>
+      <div style="padding:12px;">
+        <div style="height:7px;background:rgba(248,194,0,0.3);width:70%;border-radius:3px;margin-bottom:7px;"></div>
+        <div style="height:7px;background:rgba(255,255,255,0.05);border-radius:3px;margin-bottom:12px;"></div>
+        <div style="height:44px;background:rgba(123,47,190,0.2);border-radius:10px;"></div>
+      </div>
+    </div>`,
+    slides: [
+      { title: 'Dashboard Screen', desc: 'Card-based overview with real-time balance and quick actions.', img: 'projects/u1-slide1.jpg', grad: '#1a1a2e' },
+      { title: 'Transaction List', desc: 'Filterable transaction list with category icons and color coding.', img: 'projects/u1-slide2.jpg', grad: '#0f0f23' },
+      { title: 'Analytics View', desc: 'Animated chart screen showing monthly spending breakdown.', img: 'projects/u1-slide3.jpg', grad: '#1a1a2e' }
+    ]
+  }
+
+  /* ───────────────────────────────────────────────
+     💡 لإضافة مشروع جديد — انسخ الكتلة هذه:
+
+  ,{
+    id: 'unique-id',           // معرف فريد
+    section: 'social-media',   // القسم: social-media | print | logos | uiux
+    cat: 'نوع المشروع',
+    title: 'اسم المشروع',
+    desc: 'وصف قصير يظهر على البطاقة',
+    mockType: 'sm-mock',       // نوع الموك أب: sm-mock | print-mock | logo-mock | ui-mock
+    image: 'projects/my-cover.jpg',  // 👈 صورة الغلاف للبطاقة
+    mockContent: `<div>احتياطي إذا ما في صورة</div>`,
+    slides: [
+      { title: 'عنوان الشريحة 1', desc: 'وصف', img: 'projects/my-slide1.jpg', grad: 'linear-gradient(135deg,#000,#111)' },
+      { title: 'عنوان الشريحة 2', desc: 'وصف', img: 'projects/my-slide2.jpg', grad: '#7B2FBE' }
+    ]
+  }
+     ─────────────────────────────────────────────── */
+];
+
+/* =====================================================
+   توليد بطاقات المشاريع تلقائياً من البيانات
+   هذا الكود يمر على كل مشروع في projectsData
+   ويبني HTML للبطاقة ويضيفها في القسم الصحيح
+   ===================================================== */
+function buildCards() {
+  // نفرز المشاريع حسب القسم
+  const sections = { 'social-media': [], 'print': [], 'logos': [], 'uiux': [] };
+  projectsData.forEach(p => { if (sections[p.section]) sections[p.section].push(p); });
+
+  // لكل قسم نولد الكروت
+  Object.entries(sections).forEach(([sectionId, projects]) => {
+    const grid = document.getElementById('grid-' + sectionId);
+    if (!grid) return;
+  grid.innerHTML = projects.map((p, i) => `
+      <div class="project-card reveal${i > 0 ? ' reveal-delay-' + Math.min(i, 3) : ''}" data-project="${p.id}">
+        <div class="card-visual ${p.mockType}">
+          ${p.image
+            ? `<img src="${p.image}" alt="${p.title}" class="card-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+            : ''
+          }
+          <div class="mock-design" ${p.image ? 'style="display:none;"' : ''}>${p.mockContent}</div>
+          <div class="card-overlay"><button class="overlay-btn">View</button></div>
+        </div>
+        <div class="card-info">
+          <div class="card-cat">${p.cat}</div>
+          <div class="card-title">${p.title}</div>
+          <div class="card-desc">${p.desc}</div>
+        </div>
+      </div>
+    `).join('');
+  });
+
+  // بعد ما نبني الكروت نعيد تفعيل المراقبة للأنيميشن
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // ونربط الأحداث على الكروت الجديدة
+  document.querySelectorAll('.project-card').forEach(card => {
+    const pid = card.getAttribute('data-project');
+    if (!pid) return;
+    card.addEventListener('click', (e) => {
+      if (!e.target.classList.contains('overlay-btn')) openShowcase(pid);
+    });
+    const btn = card.querySelector('.overlay-btn');
+    if (btn) btn.addEventListener('click', (e) => { e.stopPropagation(); openShowcase(pid); });
+
+    // تكبير الكيرسر عند الهوفر
+    if (window.matchMedia('(pointer: fine)').matches) {
+      addHoverCursor([card]);
+    }
+  });
+}
+
+/* =====================================================
+   منطق الكيرسر المخصص
+   ===================================================== */
 const cursor = document.getElementById('cursor');
 const follower = document.getElementById('cursor-follower');
 let mx = 0, my = 0, fx = 0, fy = 0;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; if(cursor){ cursor.style.left = mx - 6 + 'px'; cursor.style.top = my - 6 + 'px'; } });
+
+// نتبع موقع الماوس بدقة
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  if (cursor) { cursor.style.left = mx - 5 + 'px'; cursor.style.top = my - 5 + 'px'; }
+});
+
+// الـ follower يتحرك بسلاسة خلف الكيرسر
 function animateFollower() {
-  fx += (mx - fx - 18) * 0.12;
-  fy += (my - fy - 18) * 0.12;
-  if(follower){ follower.style.left = fx + 'px'; follower.style.top = fy + 'px'; }
+  fx += (mx - fx - 16) * 0.1;
+  fy += (my - fy - 16) * 0.1;
+  if (follower) { follower.style.left = fx + 'px'; follower.style.top = fy + 'px'; }
   requestAnimationFrame(animateFollower);
 }
 animateFollower();
-function addHoverCursor(els) { els.forEach(el => { el.addEventListener('mouseenter', () => { if(cursor) cursor.style.transform = 'scale(2)'; if(follower) follower.style.transform = 'scale(1.5)'; if(follower) follower.style.borderColor = 'var(--yellow)'; }); el.addEventListener('mouseleave', () => { if(cursor) cursor.style.transform = 'scale(1)'; if(follower) follower.style.transform = 'scale(1)'; if(follower) follower.style.borderColor = 'var(--purple-light)'; }); }); }
-addHoverCursor(document.querySelectorAll('a, button, .project-card'));
 
-window.addEventListener('load', () => { setTimeout(() => { const ls = document.getElementById('loadingScreen'); if(ls) ls.classList.add('fade-out'); }, 800); });
-window.addEventListener('scroll', () => { const nav = document.getElementById('navbar'); if(nav) nav.classList.toggle('scrolled', window.scrollY > 50); });
-const observer = new IntersectionObserver(entries => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.12 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-document.querySelectorAll('a[href^="#"]').forEach(a => { a.addEventListener('click', e => { const href = a.getAttribute('href'); if(href && href !== '#'){ e.preventDefault(); const t = document.querySelector(href); if(t) t.scrollIntoView({ behavior: 'smooth' }); } }); });
+// تكبير الكيرسر عند الهوفر على عناصر تفاعلية
+function addHoverCursor(els) {
+  els.forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      if (cursor) cursor.style.transform = 'scale(2.2)';
+      if (follower) { follower.style.transform = 'scale(1.4)'; follower.style.borderColor = 'var(--yellow)'; }
+    });
+    el.addEventListener('mouseleave', () => {
+      if (cursor) cursor.style.transform = 'scale(1)';
+      if (follower) { follower.style.transform = 'scale(1)'; follower.style.borderColor = 'var(--purple-light)'; }
+    });
+  });
+}
+// نطبقه على الروابط والأزرار
+if (window.matchMedia('(pointer: fine)').matches) {
+  addHoverCursor(document.querySelectorAll('a, button'));
+}
 
-// PROJECT DATA FOR SHOWCASE
-const projectsData = {
-  sm1: { title: 'Product Launch Campaign', cat: 'Instagram Post', images: [{title:'Hero Visual',desc:'Bold typography meets neon gradients',grad:'linear-gradient(135deg,#1a0a2e,#2a0a4e)'},{title:'Carousel Slide',desc:'Engaging product highlights',grad:'linear-gradient(135deg,#0a0a2e,#4a2a8e)'},{title:'Story Highlight',desc:'Motion ready asset',grad:'linear-gradient(135deg,#2a0a2e,#0a1a2e)'}] },
-  sm2: { title: 'Brand Awareness Series', cat: 'Story Design', images: [{title:'Quote Layout',desc:'Minimal and modern',grad:'linear-gradient(180deg,#00f5a0,#7B2FBE)'},{title:'Product Teaser',desc:'Vibrant gradient story',grad:'linear-gradient(180deg,#F8C200,#ff6b35)'},{title:'Countdown Sticker',desc:'Engagement focused',grad:'linear-gradient(180deg,#9B4FDE,#0a0a1a)'}] },
-  sm3: { title: 'Sale Event Visual', cat: 'Promotional Post', images: [{title:'Flash Sale Banner',desc:'50% OFF',grad:'linear-gradient(135deg,#F8C200,#ff6b35)'},{title:'Instagram Feed Post',desc:'Limited time',grad:'linear-gradient(135deg,#7B2FBE,#F8C200)'},{title:'Facebook Ad',desc:'Shop now',grad:'linear-gradient(135deg,#ff6b35,#7B2FBE)'}] },
-  p1: { title: 'Corporate Tri-Fold', cat: 'Brochure', images: [{title:'Brochure Cover',desc:'Front panel',grad:'linear-gradient(135deg,#0f0f1a,#1a0f0f)'},{title:'Inside Spread',desc:'Content layout',grad:'linear-gradient(135deg,#1a0f0f,#0f0f1a)'},{title:'Back Cover',desc:'Contact info',grad:'linear-gradient(135deg,#0a0a14,#140a14)'}] },
-  l1: { title: 'Nova Tech Brand', cat: 'Wordmark', images: [{title:'Primary Logo',desc:'Gradient wordmark',grad:'linear-gradient(135deg,#0a0a14,#140a14)'},{title:'Alternative Color',desc:'Yellow version',grad:'linear-gradient(135deg,#F8C200,#ff9a3c)'},{title:'Monochrome',desc:'Purple solid',grad:'#7B2FBE'}] },
-  u1: { title: 'Finance Tracker App', cat: 'Mobile App', images: [{title:'Dashboard Screen',desc:'Card-based overview',grad:'#1a1a2e'},{title:'Transaction List',desc:'Filter by category',grad:'#0f0f23'},{title:'Analytics',desc:'Animated charts',grad:'#1a1a2e'}] }
-};
+/* =====================================================
+   شاشة اللودينج - تختفي بعد تحميل الصفحة
+   ===================================================== */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const ls = document.getElementById('loadingScreen');
+    if (ls) ls.classList.add('fade-out');
+  }, 900);
+});
 
-let currentProject = null, currentSecIdx = 0;
+/* =====================================================
+   الناف بار - يتغير شكله عند السكرول
+   ===================================================== */
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  if (nav) nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+/* =====================================================
+   الناف للموبايل - فتح وإغلاق القائمة
+   ===================================================== */
+const navToggle = document.getElementById('navToggle');
+const navLinks = document.getElementById('navLinks');
+navToggle?.addEventListener('click', () => {
+  navToggle.classList.toggle('open');
+  navLinks.classList.toggle('open');
+  document.body.style.overflow = navLinks.classList.contains('open') ? 'hidden' : '';
+});
+
+// دالة لإغلاق القائمة عند الضغط على رابط (للموبايل)
+function closeMenu() {
+  navToggle?.classList.remove('open');
+  navLinks?.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// إغلاق القائمة بالضغط خارجها
+document.addEventListener('click', (e) => {
+  if (navLinks?.classList.contains('open') && !navLinks.contains(e.target) && !navToggle.contains(e.target)) {
+    closeMenu();
+  }
+});
+
+/* =====================================================
+   Intersection Observer - أنيميشن الظهور عند السكرول
+   يراقب العناصر ذات كلاس reveal
+   لما العنصر يدخل في الشاشة يضيف له كلاس visible
+   ===================================================== */
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* =====================================================
+   السكرول السلس عند الضغط على روابط الأنكر (#)
+   ===================================================== */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    if (!href || href === '#') return;
+    e.preventDefault();
+    const t = document.querySelector(href);
+    if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+/* =====================================================
+   الأشكال الزخرفية - نضيف تأخير لكل شكل
+   ===================================================== */
+document.querySelectorAll('.shape').forEach((s, i) => {
+  s.style.animationDelay = (-i * 0.8) + 's';
+});
+
+/* =====================================================
+   منطق الموديول (Showcase)
+   ===================================================== */
+let currentProject = null;
+let currentSecIdx = 0;
 const overlay = document.getElementById('showcaseOverlay');
 const sectionsDiv = document.getElementById('showcaseSections');
 const projTitle = document.getElementById('showcaseProjectTitle');
@@ -875,58 +1520,112 @@ const nextBtn = document.getElementById('showcaseNext');
 const currentSpan = document.getElementById('currentIdx');
 const totalSpan = document.getElementById('totalIdx');
 
+// فتح الموديول وعرض المشروع المحدد
 function openShowcase(projectKey) {
-  currentProject = projectsData[projectKey];
-  if(!currentProject) return;
+  const project = projectsData.find(p => p.id === projectKey);
+  if (!project) return;
+  currentProject = project;
   currentSecIdx = 0;
-  projTitle.innerText = currentProject.title;
-  projCat.innerText = currentProject.cat;
-  sectionsDiv.innerHTML = '';
-  currentProject.images.forEach((img, idx) => {
-    const section = document.createElement('div');
-    section.className = 'showcase-section';
-    section.setAttribute('data-index', idx);
-    section.style.background = img.grad;
-    const content = document.createElement('div');
-    content.className = 'showcase-content';
-    content.innerHTML = `<h3>${img.title}</h3><p>${img.desc}</p>`;
-    section.appendChild(content);
-    sectionsDiv.appendChild(section);
-  });
-  totalSpan.innerText = currentProject.images.length;
-  currentSpan.innerText = 1;
+
+  // تحديث العنوان والكاتيجوري
+  projTitle.textContent = project.title;
+  projCat.textContent = project.cat;
+
+  // بناء الشرائح من مصفوفة slides — كل شريحة صورة كاملة
+  sectionsDiv.innerHTML = project.slides.map((slide, idx) => `
+    <div class="showcase-section" data-index="${idx}">
+      ${slide.img
+        ? `<img
+            src="${slide.img}"
+            alt="${slide.title}"
+            class="showcase-slide-img"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';this.nextElementSibling.style.background='${slide.grad || 'linear-gradient(135deg,#1a0a2e,#0d1a2e)'}';"
+          >
+          <div class="showcase-slide-placeholder" style="display:none;background:${slide.grad || 'linear-gradient(135deg,#1a0a2e,#0d1a2e)'};">${slide.title}</div>`
+        : `<div class="showcase-slide-placeholder" style="background:${slide.grad || 'linear-gradient(135deg,#1a0a2e,#0d1a2e)'};">${slide.title}</div>`
+      }
+      <div class="showcase-slide-caption" style="display:none;"></div>
+    </div>
+  `).join('');
+
+  // تحديث العداد
+  totalSpan.textContent = project.slides.length;
+  currentSpan.textContent = 1;
+
+  // إظهار الموديول
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
   document.getElementById('showcaseContainer').scrollTop = 0;
-  updateShowcaseProgress();
+
+  // تفعيل مراقبة الشرائح
+  observeShowcaseSections();
 }
-function closeShowcase() { overlay.classList.remove('open'); document.body.style.overflow = ''; }
-function updateShowcaseProgress() { currentSpan.innerText = currentSecIdx + 1; totalSpan.innerText = currentProject?.images.length || 0; }
+
+// إغلاق الموديول
+function closeShowcase() {
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// تحديث رقم الصفحة
+function updateShowcaseProgress() {
+  currentSpan.textContent = currentSecIdx + 1;
+  totalSpan.textContent = currentProject?.slides.length || 0;
+}
+
+// التنقل بين الشرائح
 function navigateShowcase(delta) {
-  if(!currentProject) return;
+  if (!currentProject) return;
   const sections = document.querySelectorAll('.showcase-section');
-  let newIdx = currentSecIdx + delta;
-  if(newIdx < 0) newIdx = 0;
-  if(newIdx >= sections.length) newIdx = sections.length - 1;
-  if(newIdx !== currentSecIdx) { sections[newIdx].scrollIntoView({ behavior: 'smooth', block: 'start' }); currentSecIdx = newIdx; updateShowcaseProgress(); }
-}
-document.querySelectorAll('.project-card').forEach(card => {
-  const projectId = card.getAttribute('data-project');
-  if(projectId && projectsData[projectId]) {
-    card.addEventListener('click', (e) => { if(!e.target.closest('.overlay-btn')) openShowcase(projectId); });
-    const btn = card.querySelector('.overlay-btn');
-    if(btn) btn.addEventListener('click', (e) => { e.stopPropagation(); openShowcase(projectId); });
+  let newIdx = Math.max(0, Math.min(currentSecIdx + delta, sections.length - 1));
+  if (newIdx !== currentSecIdx) {
+    sections[newIdx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    currentSecIdx = newIdx;
+    updateShowcaseProgress();
   }
-});
-closeBtn.addEventListener('click', closeShowcase);
-prevBtn.addEventListener('click', () => navigateShowcase(-1));
-nextBtn.addEventListener('click', () => navigateShowcase(1));
-overlay.addEventListener('click', (e) => { if(e.target === overlay) closeShowcase(); });
-document.addEventListener('keydown', (e) => { if(overlay.classList.contains('open')){ if(e.key === 'Escape') closeShowcase(); if(e.key === 'ArrowUp') navigateShowcase(-1); if(e.key === 'ArrowDown') navigateShowcase(1); } });
+}
+
+// مراقبة أي شريحة مرئية حالياً لتحديث العداد
 let showcaseObserver = null;
-function observeShowcaseSections(){ if(showcaseObserver) showcaseObserver.disconnect(); showcaseObserver = new IntersectionObserver(entries => { entries.forEach(entry => { if(entry.isIntersecting){ const idx = parseInt(entry.target.getAttribute('data-index'),10); if(!isNaN(idx)){ currentSecIdx = idx; updateShowcaseProgress(); } } }); }, { threshold:0.5 }); document.querySelectorAll('.showcase-section').forEach(s => showcaseObserver.observe(s)); }
-const originalObserver = new MutationObserver(() => { if(overlay.classList.contains('open')) observeShowcaseSections(); });
-originalObserver.observe(sectionsDiv, { childList: true, subtree: true });
+function observeShowcaseSections() {
+  if (showcaseObserver) showcaseObserver.disconnect();
+  showcaseObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const idx = parseInt(entry.target.getAttribute('data-index'), 10);
+        if (!isNaN(idx)) { currentSecIdx = idx; updateShowcaseProgress(); }
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.showcase-section').forEach(s => showcaseObserver.observe(s));
+}
+
+// ربط الأزرار
+closeBtn?.addEventListener('click', closeShowcase);
+prevBtn?.addEventListener('click', () => navigateShowcase(-1));
+nextBtn?.addEventListener('click', () => navigateShowcase(1));
+overlay?.addEventListener('click', e => { if (e.target === overlay) closeShowcase(); });
+
+// التنقل بلوحة المفاتيح
+document.addEventListener('keydown', e => {
+  if (!overlay.classList.contains('open')) return;
+  if (e.key === 'Escape') closeShowcase();
+  if (e.key === 'ArrowUp') navigateShowcase(-1);
+  if (e.key === 'ArrowDown') navigateShowcase(1);
+});
+
+// دعم السوايب على الموبايل في الموديول
+let touchStartY = 0;
+overlay?.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
+overlay?.addEventListener('touchend', e => {
+  const diff = touchStartY - e.changedTouches[0].clientY;
+  if (Math.abs(diff) > 50) navigateShowcase(diff > 0 ? 1 : -1);
+});
+
+/* =====================================================
+   بناء البطاقات عند تحميل الصفحة
+   ===================================================== */
+buildCards();
 </script>
 </body>
 </html>
